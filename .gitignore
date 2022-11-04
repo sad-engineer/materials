@@ -13,3 +13,5 @@ env.bak /
 .idea
 .idea/
 dist/
+temp/
+

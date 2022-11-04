@@ -16,7 +16,7 @@ import re
 import pandas as pd
 from materials.fun import connect
 from materials.fun import mean_col
-from materials.obj.constants import PATH_DB_FOR_TOOLS as PATH_DB
+from materials.obj.constants import PATH_DB_FOR_MAT as PATH_DB
 
 
 def by_class(class_of_material: str = "Сталь для отливок", path_bd: str = PATH_DB):
@@ -297,3 +297,4 @@ if __name__ == "__main__":
     print(hardness())
     print(tensile_strength())
     print(mean_col(tensile_strength()['tensile_strength']))
+

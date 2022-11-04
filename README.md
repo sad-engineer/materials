@@ -1,7 +1,8 @@
 # `materials`
 
 `materials` - модуль работы с базой данных материаллов
-
+---
+---
 Поддерждиваемые функции:
 	
 	Получение списка  доступных материалов по наименованию группы материала:
@@ -21,4 +22,33 @@
 
 	Получение предела прочности материала:
 		table_strength = materials.tensile_strength(any_brand)
-	
+
+---
+Поддерждиваемые классы:	
+
+    Класс "Материал":
+        Создать класс:
+            material = materials.Material()
+
+        Показать передаваемые параметры класса:
+            print(material.__doc__)
+
+        Показать присвоенные параметры класса:
+            material.show
+        
+        Задать настройки по умолчанию:
+            material.get_default_settings
+
+        Задать новый материал:
+            material.get_material_parameters(brand = new_brand)
+
+        Задать тип термообработки:
+            material.update_heat_treatment(
+                            heat_treatment = new_heat_treatment)
+
+        Задать тверость обрабатываемого материала после термообработки
+            (тврдость по Роквеллу):
+            material.HRC = new_HRC
+
+        Задать новый материал:
+            material.update_workpiece(workpiece = new_workpiece)
