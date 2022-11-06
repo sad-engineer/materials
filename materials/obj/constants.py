@@ -15,13 +15,15 @@
 # Пути установки базы данных
 from pathlib import Path
 import os.path
-possible_paths = [str(Path.cwd()) + "\\env\\Lib\\site-packages\\materials\\data\\materials.db",
-                  str(Path.cwd()) + "\\venv\\Lib\\site-packages\\materials\\data\\materials.db",
-                  str(Path.cwd()) + "\\data\\materials.db",
-                  ]
-for path in possible_paths:
-    if os.path.exists(path):
-        PATH_DB_FOR_MAT = path
+# possible_paths = [str(Path.cwd()) + "\\env\\Lib\\site-packages\\materials\\data\\materials.db",
+#                   str(Path.cwd()) + "\\venv\\Lib\\site-packages\\materials\\data\\materials.db",
+#                   str(Path.cwd()) + "\\data\\materials.db",
+#                   __file__.replace("obj\\constants.py", "data\\materials.db")
+#                   ]
+# for path in possible_paths:
+#     if os.path.exists(path):
+#         PATH_DB_FOR_MAT = path
+PATH_DB_FOR_MAT = __file__.replace("obj\\constants.py", "data\\materials.db")
 # Настройки для начальных данных
 DEFAULT_SETTINGS_FOR_MATERIALS = {
     "brand": "20",
