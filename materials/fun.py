@@ -28,9 +28,9 @@ def connect(filename: str):
     Returns
     -------
     db : TYPE
-        Указатель на подключенную БД.
+        Указатель на подключенную БД
     cursor : TYPE
-        Указатель на курсор БД.
+        Указатель на курсор БД
     """
     db = sqlite3.connect(filename)
     cursor = db.cursor()
@@ -64,31 +64,3 @@ def mean_col(data: pd.Series,
         else:
             data.loc[i] = None
     return round(data.mean(), order)
-#
-#
-# def average(range_val:str):
-#     """На вход подать строку типа 'до 0.05' / '0.2 - 0.5'
-#     На выходе получим среднее значение диапазона (значение типа float)"""
-#     if isinstance(range_val, type(None)):
-#         return 0
-#     elif isinstance(range_val, (float, int)):
-#         return range_val
-#     else:
-#         if range_val == range_val:
-#             if range_val.find("-") != -1:
-#                 range_val = range_val.split("-")
-#             elif range_val.find(" - ") != -1:
-#                 range_val = range_val.split("-")
-#             elif range_val.find("до") != -1:
-#                 range_val = [range_val.replace("до", "").replace(" ", "")]
-#             elif range_val.find("min") != -1:
-#                 range_val = [range_val.replace("min", "").replace(" ", ""),
-#                              range_val.replace("min", "").replace(" ", "")]
-#         if isinstance(range_val, (tuple, list)):
-#             if len(range_val) == 1:
-#                 range_val = float(range_val[0])/2
-#             elif len(range_val) == 2:
-#                 range_val = (float(range_val[1]) + float(range_val[0]))/2
-#             return range_val
-#         else:
-#             print (f"Ошибка обработки значения {range_val=}")

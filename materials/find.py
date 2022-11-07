@@ -15,12 +15,11 @@
 import re
 import pandas as pd
 from materials.fun import connect
-from materials.fun import mean_col
 from materials.obj.constants import PATH_DB_FOR_MAT as PATH_DB
 
 
 def by_class(class_of_material: str = "Сталь для отливок", path_bd: str = PATH_DB):
-    """Открывает базу данных по материаллам (по пути 'path_bd'), запрашивает
+    """Открывает базу данных по материалам (по пути 'path_bd'), запрашивает
     список всех доступных материалов по наименованию группы материала
     ('class_of_material'). Возвращает сортированный список.
 
@@ -30,7 +29,7 @@ def by_class(class_of_material: str = "Сталь для отливок", path_b
         Класс материала, по которому нужно выполнить поиск материалов.
         По умолчанию : "Сталь для отливок"
     path_bd : str, optional
-        Путь к базе данных по материаллам
+        Путь к базе данных по материалам
 
     Returns
     -------
@@ -45,18 +44,18 @@ def by_class(class_of_material: str = "Сталь для отливок", path_b
 
 def by_index(index: int = 0,
              path_bd: str = PATH_DB):
-    """Открывает базу данных по материаллам (по пути 'path_bd'), запрашивает
+    """Открывает базу данных по материалам (по пути 'path_bd'), запрашивает
     список всех доступных материалов по индексу группы материала
     ('index_of_material'). Возвращает сортированный список.
 
     Parameters
     ----------
     index : , optional
-        Игдекс класса материала, по которому нужно выполнить поиск материалов.
+        Индекс класса материала, по которому нужно выполнить поиск материалов.
         От 0 до 11
-        По умолчанию : 0
+        По умолчанию: 0
     path_bd : str, optional
-        Путь к базе данных по материаллам
+        Путь к базе данных по материалам
 
     Returns
     -------
@@ -79,7 +78,7 @@ def characteristics(brand: str = "20",
         Наименование материала, например "07Х17Н16ТЛ".
         По умолчанию : "20".
     path_bd : str, optional
-        Путь к базе данных по материаллам.
+        Путь к базе данных по материалам.
 
     Returns
     -------
@@ -113,13 +112,13 @@ def chem_struct(brand: str = "20",
         Наименование материала, например "07Х17Н16ТЛ".
         По умолчанию : "20".
     path_bd : str, optional
-        Путь к базе данных по материаллам.
+        Путь к базе данных по материалам.
 
     Returns
     -------
     chemical_composition : dict
         Возвращает словарь, содержащий хим состав материала.
-        Если таблица хим.состава, полученная в результате запроса, содержит
+        Если таблица химсостава, полученная в результате запроса, содержит
         более одной строки или не содержит строк вообще, выкидывает ошибку.
     """
     db, cursor = connect(path_bd)
@@ -134,7 +133,8 @@ def chem_struct(brand: str = "20",
         raise ReceivedEmptyDataFrame(message)
     elif len(chemical_composition) > 1:
         from obj.exceptions import UnexpectedDataInDataFrame
-        message = f"Таблица хим.состава материала содержит больше одной строки. Проверь запрос, или данные БД: {path_bd}. Должна быть одна строка"
+        message = f"Таблица хим.состава материала содержит больше одной строки. Проверь запрос, или данные БД: " \
+                  f"{path_bd}. Должна быть одна строка"
         raise UnexpectedDataInDataFrame(message)
 
 
@@ -148,7 +148,7 @@ def hardness(brand: str = "20",
         Наименование материала, например "07Х17Н16ТЛ".
         По умолчанию : "20".
     path_bd : str, optional
-        Путь к базе данных по материаллам.
+        Путь к базе данных по материалам.
 
     Returns
     -------
@@ -170,12 +170,14 @@ def hardness(brand: str = "20",
             raise ReceivedEmptyDataFrame(message)
         elif len(hardness) > 1:
             from obj.exceptions import UnexpectedDataInDataFrame
-            message = f"Таблица твердости материала содержит больше одной строки. Проверь запрос, или данные БД: {path_bd}. Должна быть одна строка"
+            message = f"Таблица твердости материала содержит больше одной строки. Проверь запрос, или данные БД: " \
+                      f"{path_bd}. Должна быть одна строка"
             raise UnexpectedDataInDataFrame(message)
     else:
         if isinstance(hardness["hardness"][0], type(None)):
             from obj.exceptions import ReceivedEmptyDataFrame
-            message = f"Таблица твердости не содержит твердость материала {brand}. Проверь запрос, или данные БД: {path_bd}. Должны быть данные по твердости"
+            message = f"Таблица твердости не содержит твердость материала {brand}. Проверь запрос, или данные БД: " \
+                      f"{path_bd}. Должны быть данные по твердости"
             raise ReceivedEmptyDataFrame(message)
         else:
             data = {}
@@ -210,7 +212,7 @@ def hardness(brand: str = "20",
                         data["hardness"] = result
                         hardness_pro = pd.concat([hardness_pro, pd.DataFrame(data, index=[index_row])], axis=0,
                                                  ignore_index=True)
-    return hardness_pro
+        return hardness_pro
 
 
 def tensile_strength(brand: str = "20",
@@ -223,7 +225,7 @@ def tensile_strength(brand: str = "20",
         Наименование материала, например "07Х17Н16ТЛ".
         По умолчанию : "20".
     path_bd : str, optional
-        Путь к базе данных по материаллам.
+        Путь к базе данных по материалам.
 
     Returns
     -------
@@ -243,12 +245,14 @@ def tensile_strength(brand: str = "20",
             raise ReceivedEmptyDataFrame(message)
         elif len(tensile_strength_table) > 1:
             from obj.exceptions import UnexpectedDataInDataFrame
-            message = f"Таблица твердости материала содержит больше одной строки. Проверь запрос, или данные БД: {path_bd}. Должна быть одна строка"
+            message = f"Таблица твердости материала содержит больше одной строки. Проверь запрос, или данные БД: " \
+                      f"{path_bd}. Должна быть одна строка"
             raise UnexpectedDataInDataFrame(message)
     else:
         if isinstance(tensile_strength_table[0], type(None)):
             from obj.exceptions import ReceivedEmptyDataFrame
-            message = f"Таблица твердости не содержит твердость материала {brand}. Проверь запрос, или данные БД: {path_bd}. Должны быть данные по твердости"
+            message = f"Таблица твердости не содержит твердость материала {brand}. Проверь запрос, или данные БД: " \
+                      f"{path_bd}. Должны быть данные по твердости"
             raise ReceivedEmptyDataFrame(message)
         else:
             data_to_row = {}
@@ -287,14 +291,3 @@ def tensile_strength(brand: str = "20",
                 new_row = pd.Series(data=data_to_row, name=str(index_row))
                 strength_pro = pd.concat([strength_pro, pd.DataFrame(new_row).T], axis=0, ignore_index=True)
     return strength_pro
-
-
-if __name__ == "__main__":
-    print(by_class())
-    print(by_index())
-    print(characteristics())
-    print(chem_struct())
-    print(hardness())
-    print(tensile_strength())
-    print(mean_col(tensile_strength()['tensile_strength']))
-

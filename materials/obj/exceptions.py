@@ -27,7 +27,7 @@ class InvalidValue(Exception):
 
 
 class ReceivedEmptyDataFrame(Exception):
-    """Выкидывать ошибку, если DataFrame пустой.
+    """Выкидывать ошибку, если DataFrame пустой
     message: объяснение ошибки
     """
     def __init__(self, message=""):

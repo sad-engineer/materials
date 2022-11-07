@@ -12,18 +12,8 @@
 # -------------------------------------------------------------------------------
 # Содержит локальные переменные
 # -------------------------------------------------------------------------------
-# Пути установки базы данных
-from pathlib import Path
-import os.path
-# possible_paths = [str(Path.cwd()) + "\\env\\Lib\\site-packages\\materials\\data\\materials.db",
-#                   str(Path.cwd()) + "\\venv\\Lib\\site-packages\\materials\\data\\materials.db",
-#                   str(Path.cwd()) + "\\data\\materials.db",
-#                   __file__.replace("obj\\constants.py", "data\\materials.db")
-#                   ]
-# for path in possible_paths:
-#     if os.path.exists(path):
-#         PATH_DB_FOR_MAT = path
-PATH_DB_FOR_MAT = __file__.replace("obj\\constants.py", "data\\materials.db")
+# Расположение БД
+PATH_DB_FOR_MAT = f"{__file__}".replace("obj\\constants.py", "data\\materials.db")
 # Настройки для начальных данных
 DEFAULT_SETTINGS_FOR_MATERIALS = {
     "brand": "20",
@@ -42,8 +32,8 @@ DEFAULT_NAMES_FOR_MATERIALS = {0: "20ГЛ",
                                7: "КЧ30-6",
                                8: "БрО10",
                                9: "Л60",
-                              10: "М1",
-                              11: "А7", }
+                               10: "М1",
+                               11: "А7"}
 # Описание типа термообработки
 NAMES_OF_HEAT_TREATMENT = {None: "Без термообработки", 0: "Нормализация", 1: "Отжиг", 2: "Улучшение"}
 INDEXES_OF_HEAT_TREATMENT = {"Без термообработки": None, "Нормализация": 0, "Отжиг": 1, "Улучшение": 2}
