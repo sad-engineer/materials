@@ -9,6 +9,6 @@ from materials.find import tensile_strength
 from materials.obj.material import Material
 
 
-# if __name__ == "__main__":
-#     var_tensile_strength = mean_col(tensile_strength()["tensile_strength"])
-#     print(var_tensile_strength)
+if __name__ == "__main__":
+    material = Material()
+    print(material)

@@ -68,23 +68,25 @@ class Material:
         self.class_: Optional[str] = None
         # подкласс материала,
         self.subclass: Optional[str] = None
-        # Таблица химсостава материала
+        # Таблица химического состава материала
         self.chemical_composition = None
         # Таблица твердости для материала в различных состояниях поставки
-        self.tabl_hardness_MPa = None
-        # Твердость материала, используемая для рассчетов
-        self.hardness_MPa_for_proc: Optional[Union[float, int]] = None
+        self.hardness_tabl_mpa = None
+        # Твердость материала, используемая для расчетов
+        self.hardness_mpa_for_proc: Optional[Union[float, int]] = None
         # Таблица пределов прочности материала в различных состояниях поставки
-        self.tabl_tensile_strength_MPa = None
+        self.tabl_tensile_strength_mpa = None
         # Предел прочности, используемый для расчетов
-        self.tensile_strength_MPa_for_proc: Optional[Union[float, int]] = None
+        self.tensile_strength_mpa_for_proc: Optional[Union[float, int]] = None
         # Вид термообработки
+        self.type_of_heat_treatment: int = None
         self.update_heat_treatment(heat_treatment)
         # Твердость обрабатываемого материала после термообработки
         self.hrc = hrc
         # pz Состояние заготовки (с коркой/ без корки, и т.д.)
+        self.workpiece: int = None
         self.update_workpiece(workpiece)
-        self.get_default_settings
+        self.get_default_settings()
 
     @property
     def show(self) -> None:
@@ -102,12 +104,12 @@ class Material:
         if self.subclass:
             report += f"""
             Подкласс материала: {self.subclass}."""
-        if self.hardness_MPa_for_proc:
+        if self.hardness_mpa_for_proc:
             report += f"""
-            Твердость обрабатываемого материала = {self.hardness_MPa_for_proc} МПа."""
-        if self.tensile_strength_MPa_for_proc:
+            Твердость обрабатываемого материала = {self.hardness_mpa_for_proc} МПа."""
+        if self.tensile_strength_mpa_for_proc:
             report += f"""
-            Предел текучести для обрабатываемого материала = {self.tensile_strength_MPa_for_proc} МПа."""
+            Предел текучести для обрабатываемого материала = {self.tensile_strength_mpa_for_proc} МПа."""
         if self.type_of_heat_treatment:
             report += f"""
             Вид термообработки обрабатываемого материала = {self.type_of_heat_treatment}."""
@@ -137,9 +139,9 @@ class Material:
                                 is_negative_number)
         if new_brand_exists and self.brand != brand:
             self.brand = brand
-            # По наменованию материала определяем его параметры: индекс типа материала, класс, подкласс материала
+            # По наименованию материала определяем его параметры: индекс типа материала, класс, подкласс материала
             self.get_material_characteristics()
-            # Заполняем таблицу химсостава
+            # Заполняем таблицу химического состава
             self.get_chemical_composition()
             # Заполняем таблицу твердости и находим твердость для расчетов
             self.get_hardness()
@@ -150,13 +152,13 @@ class Material:
         """ Задает класс материала, подкласс, индекс типа материала
         """
         if not isinstance(self.brand, type(None)):
-            index, class_, subclass = characteristics(brand = self.brand)
+            index, class_, subclass = characteristics(brand=self.brand)
             self.type_of_mat = index
             self.class_ = class_
             self.subclass = subclass
 
     def get_chemical_composition(self) -> None:
-        """ Создает таблицу химического состава материала. Выбирает химсостав
+        """ Создает таблицу химического состава материала. Выбирает таблицу химического состава
         из БД. Если в БД нет хим состава материала - берет значение по умолчанию
         """
         try:
@@ -168,39 +170,39 @@ class Material:
                   f"{default_brand}")
 
     def get_hardness(self) -> None:
-        """ Получает таблицу твердости из БД. Если в БД нет таблицы твердости для материала - выполняет то же для
+        """ Получает таблицу твердости из БД. Если в БД нет таблицы твердости для материала - выполняет тоже для
         материала по умолчанию
         """
         try:
-            self.tabl_hardness_MPa = hardness(brand=self.brand)
+            self.hardness_tabl_mpa = hardness(brand=self.brand)
         except ReceivedEmptyDataFrame:
             default_brand = DEFAULT_NAMES[self.type_of_mat]
-            self.hardness_tabl_MPa = hardness(brand=default_brand)
-            print(f"Твердость материала {self.brand} не найдена. Взята твердость материала по умолчанию: {default_brand}")
-        self.hardness_MPa_for_proc = mean_col(data=self.tabl_hardness_MPa["hardness"])
+            self.hardness_tabl_mpa = hardness(brand=default_brand)
+            print(f"Твердость материала {self.brand} не найдена. "
+                  f"Взята твердость материала по умолчанию: {default_brand}")
+        self.hardness_mpa_for_proc = mean_col(data=self.hardness_tabl_mpa["hardness"])
 
     def get_tensile_strength(self) -> None:
-        """ Получает таблицу предела кратковременной прочности из БД. Если в 
-        БД нет таблицы твердости для материала - выполняет то же для материала по умолчанию
+        """ Получает таблицу предела кратковременной прочности из БД. Если в БД нет таблицы твердости для материала -
+        выполняет тоже для материала по умолчанию
         """
         try:
-            self.tabl_tensile_strength_MPa = tensile_strength(brand=self.brand)
+            self.tabl_tensile_strength_mpa = tensile_strength(brand=self.brand)
         except ReceivedEmptyDataFrame:
             default_brand = DEFAULT_NAMES[self.type_of_mat]
-            self.tabl_tensile_strength_MPa = tensile_strength(brand=default_brand)
+            self.tabl_tensile_strength_mpa = tensile_strength(brand=default_brand)
             print(f"Предел прочности материала {self.brand} не найден. Взят для материала по умолчанию: "
                   f"{default_brand}")
-        self.tensile_strength_MPa_for_proc = mean_col(data=self.tabl_tensile_strength_MPa["tensile_strength"])
+        self.tensile_strength_mpa_for_proc = mean_col(data=self.tabl_tensile_strength_mpa["tensile_strength"])
 
-    @property
     def get_default_settings(self) -> None:
-        """ Настраивает атрибуты класса в соответствии с глобальными дефолтными настрйками
+        """ Настраивает атрибуты класса в соответствии с глобальными дефолтными настройками
         """
         for setting_name, setting_val in DEFAULT_SETTINGS.items():
             self.get_material_parameters(brand=setting_val) if setting_name == "brand" else setattr(self, setting_name,
                                                                                                     setting_val)
 
-    def update_heat_treatment(self, heat_treatment:Optional[Union[str, int]] = None):
+    def update_heat_treatment(self, heat_treatment: Optional[Union[str, int]] = None):
         """ Проверяет значение термообработки. При корректном значении устанавливает тип термообработки
         """
         if isinstance(heat_treatment, type(None)):
@@ -222,12 +224,11 @@ class Material:
                 message = {"Вид термообработки не определен."}
                 raise InvalidValue(message)
 
-
-    def update_workpiece(self, workpiece:Optional[Union[str, int]] = None):
-        """ Проверяет значение типа поверхности заготовки. При корректном значении устанавливает тип  поверхности
+    def update_workpiece(self, workpiece: Optional[Union[str, int]] = None):
+        """ Проверяет значение типа поверхности заготовки. При корректном значении устанавливает тип поверхности
         заготовки.
         """
-        if  isinstance(workpiece, type(None)):
+        if isinstance(workpiece, type(None)):
             print("Параметр типа поверхности заготовки не был передан")
         else:
             if isinstance(workpiece, int):
