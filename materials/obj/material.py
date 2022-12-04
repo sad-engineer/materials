@@ -18,15 +18,16 @@ from materials.find import characteristics
 from materials.find import chem_struct
 from materials.find import hardness
 from materials.find import tensile_strength
-from materials.fun import mean_col
+from materials.scr.gen_fun import get_average
+from materials.scr.gen_fun import show
+from materials.scr.gen_fun import is_brand_in_database
+from materials.scr.gen_fun import check_workpiece, check_heat_treatment
 from materials.obj.exceptions import ReceivedEmptyDataFrame
 from materials.obj.exceptions import InvalidValue
 from materials.obj.constants import DEFAULT_NAMES_FOR_MATERIALS as DEFAULT_NAMES
 from materials.obj.constants import DEFAULT_SETTINGS_FOR_MATERIALS as DEFAULT_SETTINGS
-from materials.obj.constants import NAMES_OF_HEAT_TREATMENT as NAMES_HT
-from materials.obj.constants import INDEXES_OF_HEAT_TREATMENT as INDEXES_HT
-from materials.obj.constants import NAMES_OF_WORKPIECE as NAMES_WP
-from materials.obj.constants import INDEXES_OF_WORKPIECE as INDEXES_WP
+
+
 
 
 class Material:
@@ -35,9 +36,9 @@ class Material:
     Parameters
     ----------
     brand : str, optional
-        Наименование материала (будет использовано для поиска по базе данных). 
+        Наименование материала (будет использовано для поиска по базе данных).
         По умолчанию: None.
-    heat_treatment: int, optional
+    heat_treatment: in range(3) or None, optional
         Тип термообработки:
             None - Без термообработки;
             0 - Нормализация;
@@ -46,7 +47,7 @@ class Material:
         По умолчанию: None.
     hrc : float, optional
         Значение твердости после термообработки по системе HRC
-    workpiece : int, optional
+    workpiece : in range(6), optional
         Тип поверхности заготовки:
             0 - Без корки;
             1 - С коркой: прокат;
@@ -79,65 +80,27 @@ class Material:
         # Предел прочности, используемый для расчетов
         self.tensile_strength_mpa_for_proc: Optional[Union[float, int]] = None
         # Вид термообработки
-        self.type_of_heat_treatment: int = None
-        self.update_heat_treatment(heat_treatment)
+        self.type_of_heat_treatment: Optional[int] = None
+        if not isinstance(heat_treatment, type(None)):
+            self.update_heat_treatment(heat_treatment)
         # Твердость обрабатываемого материала после термообработки
         self.hrc = hrc
         # pz Состояние заготовки (с коркой/ без корки, и т.д.)
-        self.workpiece: int = None
-        self.update_workpiece(workpiece)
+        self.workpiece: Optional[int] = None
+        if not isinstance(workpiece, type(None)):
+            self.update_workpiece(workpiece)
         self.get_default_settings()
 
-    @property
     def show(self) -> None:
-        report = f"""
-        ### Параметры обрабатываемого материала ###"""
-        if self.brand:
-            report += f"""
-            Наименование материала: {self.brand}."""
-        if self.type_of_mat:
-            report += f"""
-            Тип материала: {self.type_of_mat}."""
-        if self.class_:
-            report += f"""
-            Класс материала: {self.class_}."""
-        if self.subclass:
-            report += f"""
-            Подкласс материала: {self.subclass}."""
-        if self.hardness_mpa_for_proc:
-            report += f"""
-            Твердость обрабатываемого материала = {self.hardness_mpa_for_proc} МПа."""
-        if self.tensile_strength_mpa_for_proc:
-            report += f"""
-            Предел текучести для обрабатываемого материала = {self.tensile_strength_mpa_for_proc} МПа."""
-        if self.type_of_heat_treatment:
-            report += f"""
-            Вид термообработки обрабатываемого материала = {self.type_of_heat_treatment}."""
-        if self.hrc:
-            report += f"""
-            Твердость обрабатываемого материала после термообработки = {self.hrc} HRC."""
-        if self.workpiece:
-            report += f"""
-            Состояние заготовки: {self.workpiece}."""
-        print(report)
+        show(self)
 
     def get_material_parameters(self, brand: Optional[str] = None) -> None:
-        """ Задает: 
-            класс материала, 
-            подкласс, 
-            индекс типа материала, 
-            хим.состав, 
-            твердость,
-            предел прочности.
-            
-            Если в 'brand' передать новый материал, переопределит параметры 
-            для нового материала"""
-        
-        is_negative_number = True if isinstance(brand, (float, int)) and brand < 0 else False
+        """ Если в 'brand' передать новый материал, переопределит параметры для нового материала.
+        Задает: класс материала, подкласс, индекс типа материала, хим.состав,  твердость, предел прочности.
+        """
         new_brand_exists = not (brand in ["", " ", "  ", None, 0] or
-                                isinstance(brand, type(None)) or
-                                is_negative_number)
-        if new_brand_exists and self.brand != brand:
+                                isinstance(brand, type(None)))
+        if new_brand_exists and self.brand != brand and is_brand_in_database(brand):
             self.brand = brand
             # По наименованию материала определяем его параметры: индекс типа материала, класс, подкласс материала
             self.get_material_characteristics()
@@ -158,14 +121,14 @@ class Material:
             self.subclass = subclass
 
     def get_chemical_composition(self) -> None:
-        """ Создает таблицу химического состава материала. Выбирает таблицу химического состава
-        из БД. Если в БД нет хим состава материала - берет значение по умолчанию
+        """ Создает таблицу химического состава материала. Выбирает таблицу химического состава из БД. Если в БД нет
+        хим состава материала - берет значение по умолчанию
         """
         try:
             self.chemical_composition = chem_struct(brand=self.brand)
         except ReceivedEmptyDataFrame:
             default_brand = DEFAULT_NAMES[self.type_of_mat]
-            self.chemical_composition = chem_struct(default_brand)
+            self.chemical_composition = chem_struct(brand=default_brand)
             print(f"Хим.состав материала {self.brand} не найден. Взят хим.состав материала по умолчанию: "
                   f"{default_brand}")
 
@@ -178,9 +141,9 @@ class Material:
         except ReceivedEmptyDataFrame:
             default_brand = DEFAULT_NAMES[self.type_of_mat]
             self.hardness_tabl_mpa = hardness(brand=default_brand)
-            print(f"Твердость материала {self.brand} не найдена. "
-                  f"Взята твердость материала по умолчанию: {default_brand}")
-        self.hardness_mpa_for_proc = mean_col(data=self.hardness_tabl_mpa["hardness"])
+            print(f"Твердость материала {self.brand} не найдена. Взята твердость материала по умолчанию: "
+                  f"{default_brand}")
+        self.hardness_mpa_for_proc = get_average(data=self.hardness_tabl_mpa["hardness"])
 
     def get_tensile_strength(self) -> None:
         """ Получает таблицу предела кратковременной прочности из БД. Если в БД нет таблицы твердости для материала -
@@ -193,7 +156,7 @@ class Material:
             self.tabl_tensile_strength_mpa = tensile_strength(brand=default_brand)
             print(f"Предел прочности материала {self.brand} не найден. Взят для материала по умолчанию: "
                   f"{default_brand}")
-        self.tensile_strength_mpa_for_proc = mean_col(data=self.tabl_tensile_strength_mpa["tensile_strength"])
+        self.tensile_strength_mpa_for_proc = get_average(data=self.tabl_tensile_strength_mpa["tensile_strength"])
 
     def get_default_settings(self) -> None:
         """ Настраивает атрибуты класса в соответствии с глобальными дефолтными настройками
@@ -205,44 +168,10 @@ class Material:
     def update_heat_treatment(self, heat_treatment: Optional[Union[str, int]] = None):
         """ Проверяет значение термообработки. При корректном значении устанавливает тип термообработки
         """
-        if isinstance(heat_treatment, type(None)):
-            print("Параметр вида термообработки не был передан")
-        else:
-            if isinstance(heat_treatment, int):
-                if heat_treatment in NAMES_HT:
-                    self.type_of_heat_treatment = heat_treatment
-                else:
-                    message = {"Индекс вида термообработки не определен."}
-                    raise InvalidValue(message)
-            elif isinstance(heat_treatment, str):
-                if heat_treatment in INDEXES_HT:
-                    self.type_of_heat_treatment = INDEXES_HT[heat_treatment]
-                else:
-                    message = {"Вид термообработки не определен."}
-                    raise InvalidValue(message)
-            else:
-                message = {"Вид термообработки не определен."}
-                raise InvalidValue(message)
+        self.type_of_heat_treatment = check_heat_treatment(heat_treatment)
 
-    def update_workpiece(self, workpiece: Optional[Union[str, int]] = None):
+    def update_workpiece(self, workpiece: Union[str, int]):
         """ Проверяет значение типа поверхности заготовки. При корректном значении устанавливает тип поверхности
         заготовки.
         """
-        if isinstance(workpiece, type(None)):
-            print("Параметр типа поверхности заготовки не был передан")
-        else:
-            if isinstance(workpiece, int):
-                if workpiece in NAMES_WP:
-                    self.workpiece = workpiece
-                else:
-                    message = {"Индекс типа поверхности заготовки не определен."}
-                    raise InvalidValue(message)
-            elif isinstance(workpiece, str):
-                if workpiece in INDEXES_WP:
-                    self.workpiece = INDEXES_WP[workpiece]
-                else:
-                    message = {"Тип поверхности заготовки термообработки не определен."}
-                    raise InvalidValue(message)
-            else:
-                message = {"Тип поверхности заготовки термообработки не определен."}
-                raise InvalidValue(message)
+        self.workpiece = check_workpiece(workpiece)
