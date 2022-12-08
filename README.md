@@ -1,7 +1,30 @@
 # `materials`
 
-`materials` - модуль работы с базой данных материаллов
+`materials` - модуль работы с базой данных материалов
 ---
+---
+Поддерждиваемые константы:
+
+    Список материалов по умолчанию (key - индекс класса материала):
+    materials.DEFAULT_NAMES_FOR_MATERIALS
+
+    Описание доступных классов материалов:
+        доступ по индексу класса материала:
+            materials.NAMES_OF_CLASS_MATERIALS
+        доступ по классу материала:
+            materials.INDEXES_OF_CLASS_MATERIALS
+
+    Описание типа термообработки:
+        доступ по индексу типа термообработки:
+            materials.NAMES_OF_HEAT_TREATMENT
+        доступ по типу термообработки:
+            materials.INDEXES_OF_HEAT_TREATMENT
+
+    Описание типа поверхности заготовки:
+        доступ по индексу типа поверхности заготовки:
+            materials.NAMES_OF_WORKPIECE
+        доступ по типу поверхности заготовки:
+            materials.INDEXES_OF_WORKPIECE
 ---
 Поддерждиваемые функции:
 	
@@ -22,7 +45,6 @@
 
 	Получение предела прочности материала:
 		table_strength = materials.tensile_strength(any_brand)
-
 ---
 Поддерждиваемые классы:	
 
