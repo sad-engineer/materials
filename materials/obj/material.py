@@ -1,17 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# -------------------------------------------------------------------------------
-# Name:        material
-# Purpose:     Parameters of the processed material
-#
-# Author:      ANKorenuk
-#
-# Created:     09.04.2022
-# Copyright:   (c) ANKorenuk 2022
-# Licence:     <your licence>
-# -------------------------------------------------------------------------------
-# Параметры обрабатываемого материала
-# -------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
 from typing import Optional, Union
 
 from materials.find import characteristics
@@ -23,11 +12,8 @@ from materials.scr.gen_fun import show
 from materials.scr.gen_fun import is_brand_in_database
 from materials.scr.gen_fun import check_workpiece, check_heat_treatment
 from materials.obj.exceptions import ReceivedEmptyDataFrame
-from materials.obj.exceptions import InvalidValue
 from materials.obj.constants import DEFAULT_NAMES_FOR_MATERIALS as DEFAULT_NAMES
 from materials.obj.constants import DEFAULT_SETTINGS_FOR_MATERIALS as DEFAULT_SETTINGS
-
-
 
 
 class Material:
@@ -36,8 +22,7 @@ class Material:
     Parameters
     ----------
     brand : str, optional
-        Наименование материала (будет использовано для поиска по базе данных).
-        По умолчанию: None.
+        Наименование материала (будет использовано для поиска по базе данных). По умолчанию: None.
     heat_treatment: in range(3) or None, optional
         Тип термообработки:
             None - Без термообработки;
@@ -139,11 +124,11 @@ class Material:
         try:
             self.hardness_tabl_mpa = hardness(brand=self.brand)
         except ReceivedEmptyDataFrame:
-            default_brand = DEFAULT_NAMES[self.type_of_mat]
-            self.hardness_tabl_mpa = hardness(brand=default_brand)
-            print(f"Твердость материала {self.brand} не найдена. Взята твердость материала по умолчанию: "
-                  f"{default_brand}")
-        self.hardness_mpa_for_proc = get_average(data=self.hardness_tabl_mpa["hardness"])
+            self.get_default_hardness()
+        try:
+            self.hardness_mpa_for_proc = get_average(data=self.hardness_tabl_mpa["hardness"])
+        except KeyError:
+            self.get_default_hardness()
 
     def get_tensile_strength(self) -> None:
         """ Получает таблицу предела кратковременной прочности из БД. Если в БД нет таблицы твердости для материала -
@@ -152,10 +137,7 @@ class Material:
         try:
             self.tabl_tensile_strength_mpa = tensile_strength(brand=self.brand)
         except ReceivedEmptyDataFrame:
-            default_brand = DEFAULT_NAMES[self.type_of_mat]
-            self.tabl_tensile_strength_mpa = tensile_strength(brand=default_brand)
-            print(f"Предел прочности материала {self.brand} не найден. Взят для материала по умолчанию: "
-                  f"{default_brand}")
+            self.get_default_tensile_strength()
         self.tensile_strength_mpa_for_proc = get_average(data=self.tabl_tensile_strength_mpa["tensile_strength"])
 
     def get_default_settings(self) -> None:
@@ -164,6 +146,20 @@ class Material:
         for setting_name, setting_val in DEFAULT_SETTINGS.items():
             self.get_material_parameters(brand=setting_val) if setting_name == "brand" else setattr(self, setting_name,
                                                                                                     setting_val)
+
+    def get_default_hardness(self) -> None:
+        """ Получает таблицу твердости из БД для материала по умолчанию
+        """
+        default_brand = DEFAULT_NAMES[self.type_of_mat]
+        self.hardness_tabl_mpa = hardness(brand=default_brand)
+        print(f"Твердость материала {self.brand} не найдена. Взята твердость материала по умолчанию: {default_brand}")
+
+    def get_default_tensile_strength(self) -> None:
+        """ Получает таблицу предела кратковременной прочности из БД для материала по умолчанию
+        """
+        default_brand = DEFAULT_NAMES[self.type_of_mat]
+        self.tabl_tensile_strength_mpa = tensile_strength(brand=default_brand)
+        print(f"Предел прочности материала {self.brand} не найден. Взят для материала по умолчанию: {default_brand}")
 
     def update_heat_treatment(self, heat_treatment: Optional[Union[str, int]] = None):
         """ Проверяет значение термообработки. При корректном значении устанавливает тип термообработки

@@ -15,7 +15,6 @@ from materials.obj.exceptions import UnexpectedDataInDataFrame
 from materials.obj.exceptions import InvalidValue
 
 
-
 def connect(filename: str = PATH_DB):
     """ Создает и подключает базу данных если ее нет. Если БД есть - подключает ее
 
@@ -49,7 +48,6 @@ def get_average(data: pd.Series, order: int = 6) -> pd.Series:
     return round(data.mean(), order)
 
 
-
 def is_correct_record(record: pd.DataFrame):
     """Проверяет полученную запись из БД. Запись должна содержать одну строку
 
@@ -57,7 +55,10 @@ def is_correct_record(record: pd.DataFrame):
     :return: True если record содержит одну строку.
     """
     if len(record) == 1:
-        return True
+        if not isinstance(record.loc[0], type(None)):
+            return True
+        else:
+            raise ReceivedEmptyDataFrame("Получена пустая таблица. Проверьте данные БД и запроса.")
     elif len(record) == 0:
         raise ReceivedEmptyDataFrame("Получена пустая таблица. Проверьте данные БД и запроса.")
     elif len(record) > 1:
@@ -106,10 +107,10 @@ def get_table_hardness(brand: str, text_hardness: str) -> pd.DataFrame:
         data_row = {}
         items = row.split("/")
         for item in items:
-            if item.find(brand) != -1:
-                data_row["condition"] = get_condition(brand, item)
-            elif item.find("HB 10 -1") != -1:
+            if item.find("HB 10 -1") != -1:
                 data_row["hardness"] = get_hardness(item)
+            elif item.find(brand) != -1:
+                data_row["condition"] = get_condition(brand, item)
             else:
                 raise InvalidValue("В строке передан неверный текст.")
         data_table[rows.index(row)] = data_row
@@ -128,14 +129,21 @@ def get_table_tensile_strength(text_tensile_strength: str) -> pd.DataFrame:
         data_row = {}
         items = row.strip().split("/")
         for item in items:
-            if item != "":
-                if item.find("ГОСТ") != -1:
-                    data_row["condition"] = item
-                else:
-                    data_row["tensile_strength"] = item
-        if data_row != {}:
+            if item.find("еханические свойства") == -1:
+                if item != "":
+                    if item.find("ГОСТ") != -1:
+                        data_row["condition"] = item
+                    else:
+                        data_row["tensile_strength"] = item
+        if data_row != {} and "tensile_strength" in data_row:
             data_table[rows.index(row)] = data_row
-    return pd.DataFrame(data_table).T
+    result = pd.DataFrame(data_table).T
+    if len(result) != 0:
+        return result
+    else:
+        message = f"Таблица предела прочности не содержит предел прочности. Проверь запрос, или данные БД. Должны " \
+                  f"быть данные по твердости"
+        raise ReceivedEmptyDataFrame(message)
 
 
 def get_hardness(text: str) -> str:
@@ -288,6 +296,7 @@ def check_workpiece(workpiece: Union[str, int]) -> Union[str, int]:
             raise InvalidValue(f"Не верный тип поверхности заготовки термообработки: {workpiece=}.")
     else:
         raise InvalidValue(f"Не верный тип поверхности заготовки термообработки: {workpiece=}.")
+
 
 def check_heat_treatment(heat_treatment: Union[str, int]) -> Union[str, int]:
     """ Проверяет значение вида термообработки
