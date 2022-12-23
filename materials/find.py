@@ -120,4 +120,3 @@ def tensile_strength(brand: str = "20"):
         if is_correct_tensile_strength(brand, data):
             if not isinstance(data[0], type(None)):
                 return get_table_tensile_strength(text_tensile_strength=data[0])
-            return None

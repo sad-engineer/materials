@@ -47,7 +47,7 @@ class Material:
                  hrc: Optional[Union[float, int]] = None,
                  workpiece: int = 0):
         # наименование материала
-        self.brand = brand
+        self.brand: Optional[str] = None
         # индекс типа материала,
         self.type_of_mat: Optional[int] = None
         # класс материала,
@@ -64,6 +64,12 @@ class Material:
         self.tabl_tensile_strength_mpa = None
         # Предел прочности, используемый для расчетов
         self.tensile_strength_mpa_for_proc: Optional[Union[float, int]] = None
+        if not isinstance(brand, type(None)):
+            self.get_material_parameters(brand)
+        else:
+            default_brand = DEFAULT_NAMES[2]
+            self.get_material_parameters(default_brand)
+
         # Вид термообработки
         self.type_of_heat_treatment: Optional[int] = None
         if not isinstance(heat_treatment, type(None)):
@@ -74,7 +80,6 @@ class Material:
         self.workpiece: Optional[int] = None
         if not isinstance(workpiece, type(None)):
             self.update_workpiece(workpiece)
-        self.get_default_settings()
 
     def show(self) -> None:
         show(self)
@@ -109,13 +114,7 @@ class Material:
         """ Создает таблицу химического состава материала. Выбирает таблицу химического состава из БД. Если в БД нет
         хим состава материала - берет значение по умолчанию
         """
-        try:
-            self.chemical_composition = chem_struct(brand=self.brand)
-        except ReceivedEmptyDataFrame:
-            default_brand = DEFAULT_NAMES[self.type_of_mat]
-            self.chemical_composition = chem_struct(brand=default_brand)
-            print(f"Хим.состав материала {self.brand} не найден. Взят хим.состав материала по умолчанию: "
-                  f"{default_brand}")
+        self.chemical_composition = chem_struct(brand=self.brand)
 
     def get_hardness(self) -> None:
         """ Получает таблицу твердости из БД. Если в БД нет таблицы твердости для материала - выполняет тоже для
@@ -171,3 +170,19 @@ class Material:
         заготовки.
         """
         self.workpiece = check_workpiece(workpiece)
+
+    def __getstate__(self) -> dict:  # Как мы будем "сохранять" класс
+        """ Создает словарь ключевых параметров класса 'Материал'."""
+        state = dict()
+        state["brand"] = self.brand
+        state["type_of_heat_treatment"] = self.type_of_heat_treatment
+        state["hrc"] = self.hrc
+        state["workpiece"] = self.workpiece
+        return state
+
+    def __setstate__(self, state: dict):  # Как мы будем восстанавливать класс из байтов
+        """ Загружает ключевые параметры класса из словаря, настраивает в зависимости от brand"""
+        self.get_material_parameters(brand=state["brand"])
+        self.type_of_heat_treatment = state["type_of_heat_treatment"]
+        self.hrc = state["hrc"]
+        self.workpiece = state["workpiece"]

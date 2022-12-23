@@ -50,7 +50,8 @@
 
     Класс "Материал":
         Создать класс:
-            material = materials.Material()
+            material = materials.Material(brand: Optional[str], heat_treatment: Optional[Union[str, int]],
+                                          hrc: Optional[Union[float, int]], workpiece: int)
 
         Показать передаваемые параметры класса:
             print(material.__doc__)
@@ -59,17 +60,15 @@
             material.show
         
         Задать настройки по умолчанию:
-            material.get_default_settings
+            material.get_default_settings()
 
         Задать новый материал:
             material.get_material_parameters(brand = new_brand)
 
         Задать тип термообработки:
-            material.update_heat_treatment(
-                            heat_treatment = new_heat_treatment)
+            material.update_heat_treatment(heat_treatment = new_heat_treatment)
 
-        Задать тверость обрабатываемого материала после термообработки
-            (тврдость по Роквеллу):
+        Задать тверость обрабатываемого материала после термообработки (тврдость по Роквеллу):
             material.HRC = new_HRC
 
         Задать новый материал:

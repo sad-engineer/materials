@@ -62,7 +62,6 @@ def is_correct_record(record: pd.DataFrame):
     elif len(record) == 0:
         raise ReceivedEmptyDataFrame("Получена пустая таблица. Проверьте данные БД и запроса.")
     elif len(record) > 1:
-        print(record)
         message = f"Таблица содержит больше одной строки. Проверь запрос, или данные БД. Должна быть одна строка"
         raise UnexpectedDataInDataFrame(message)
 
@@ -74,7 +73,7 @@ def is_correct_hardness(hardness: pd.DataFrame):
     :return: True если ячейка во втором столбце содержит данные.
     """
     if isinstance(hardness["hardness"][0], type(None)):
-        message = f"Таблица твердости не содержит твердость материала {hardness['brand_of_material']}. " \
+        message = f"Таблица твердости не содержит твердость материала {hardness['brand_of_material'][0]}. " \
                   f"Проверь запрос, или данные БД. Должны быть данные по твердости."
         raise ReceivedEmptyDataFrame(message)
     return True
@@ -87,9 +86,9 @@ def is_correct_tensile_strength(brand: str, text_tensile_strength: pd.DataFrame)
     :param text_tensile_strength: проверяемая на соответствие запись предела прочности.
     :return: True если запись содержит данные.
     """
-    if isinstance(text_tensile_strength, type(None)):
+    if isinstance(text_tensile_strength[0], type(None)):
         message = f"Таблица твердости не содержит твердость материала {brand}. Проверь запрос, или данные БД. Должны " \
-                  f"быть данные по твердости"
+                  f"быть данные по твердости."
         raise ReceivedEmptyDataFrame(message)
     return True
 
@@ -234,36 +233,25 @@ def get_range_for_str(rvalue: str) -> tuple:
 
 
 def show(material) -> None:
-    report = f"""
-    ### Параметры обрабатываемого материала ###"""
+    print("""### Параметры обрабатываемого материала ###""")
     if material.brand:
-        report += f"""
-        Наименование материала: {material.brand}."""
+        print(f"""Наименование материала: {material.brand}.""")
     if material.type_of_mat:
-        report += f"""
-        Тип материала: {material.type_of_mat}."""
+        print(f"""Тип материала: {material.type_of_mat}.""")
     if material.class_:
-        report += f"""
-        Класс материала: {material.class_}."""
+        print(f"""Класс материала: {material.class_}.""")
     if material.subclass:
-        report += f"""
-        Подкласс материала: {material.subclass}."""
+        print(f"""Подкласс материала: {material.subclass}.""")
     if material.hardness_mpa_for_proc:
-        report += f"""
-        Твердость обрабатываемого материала = {material.hardness_mpa_for_proc} МПа."""
+        print(f"""Твердость обрабатываемого материала = {material.hardness_mpa_for_proc} МПа.""")
     if material.tensile_strength_mpa_for_proc:
-        report += f"""
-        Предел текучести для обрабатываемого материала = {material.tensile_strength_mpa_for_proc} МПа."""
+        print(f"""Предел текучести для обрабатываемого материала = {material.tensile_strength_mpa_for_proc} МПа.""")
     if material.type_of_heat_treatment:
-        report += f"""
-        Вид термообработки обрабатываемого материала = {material.type_of_heat_treatment}."""
+        print(f"""Вид термообработки обрабатываемого материала = {material.type_of_heat_treatment}.""")
     if material.hrc:
-        report += f"""
-        Твердость обрабатываемого материала после термообработки = {material.hrc} HRC."""
+        print(f"""Твердость обрабатываемого материала после термообработки = {material.hrc} HRC.""")
     if material.workpiece:
-        report += f"""
-        Состояние заготовки: {material.workpiece}."""
-    print(report)
+        print(f"""Состояние заготовки: {material.workpiece}.""")
 
 
 def is_brand_in_database(brand: str) -> bool:
@@ -313,6 +301,6 @@ def check_heat_treatment(heat_treatment: Union[str, int]) -> Union[str, int]:
         if heat_treatment in INDEXES_HT:
             return INDEXES_HT[heat_treatment]
         else:
-            raise InvalidValue("Не верный вид термообработки {heat_treatment=}.")
+            raise InvalidValue(f"Не верный вид термообработки {heat_treatment=}.")
     else:
         raise InvalidValue("Вид термообработки не определен.")

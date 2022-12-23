@@ -44,14 +44,3 @@ class UnexpectedDataInDataFrame(Exception):
         self.message = message
         super().__init__(self.message)
 
-
-class CalculationIsNotDefined(Exception):
-    """Исключение возникает когда расчет для этого типа обработки не определен.
-    Также, выбрасываю везде, где расчет нужно дописать или просто не существует.
-
-    Атрибуты:
-        message: объяснение ошибки
-    """
-    def __init__(self, message=""):
-        self.message = message
-        super().__init__(self.message)
