@@ -27,7 +27,7 @@ def connect(filename: str = PATH_DB):
     return db, cursor
 
 
-def get_average(data: pd.Series, order: int = 6) -> pd.Series:
+def get_average(data: pd.Series, order: int = 6) -> float:
     """ Считает среднее значение Series
 
     :param data: Серия значений для подсчета среднего значения.
@@ -230,28 +230,6 @@ def get_range_for_str(rvalue: str) -> tuple:
         if len(rvalue) != 2:
             raise InvalidValue(f"Диапазон значений {rvalue} должен содержать 2 числа!")
         return get_range_for_list(rvalue)
-
-
-def show(material) -> None:
-    print("""### Параметры обрабатываемого материала ###""")
-    if material.brand:
-        print(f"""Наименование материала: {material.brand}.""")
-    if material.type_of_mat:
-        print(f"""Тип материала: {material.type_of_mat}.""")
-    if material.class_:
-        print(f"""Класс материала: {material.class_}.""")
-    if material.subclass:
-        print(f"""Подкласс материала: {material.subclass}.""")
-    if material.hardness_mpa_for_proc:
-        print(f"""Твердость обрабатываемого материала = {material.hardness_mpa_for_proc} МПа.""")
-    if material.tensile_strength_mpa_for_proc:
-        print(f"""Предел текучести для обрабатываемого материала = {material.tensile_strength_mpa_for_proc} МПа.""")
-    if material.type_of_heat_treatment:
-        print(f"""Вид термообработки обрабатываемого материала = {material.type_of_heat_treatment}.""")
-    if material.hrc:
-        print(f"""Твердость обрабатываемого материала после термообработки = {material.hrc} HRC.""")
-    if material.workpiece:
-        print(f"""Состояние заготовки: {material.workpiece}.""")
 
 
 def is_brand_in_database(brand: str) -> bool:

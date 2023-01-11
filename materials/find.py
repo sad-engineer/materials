@@ -59,10 +59,9 @@ def characteristics(brand: str = "20") -> tuple[int, str, str]:
     db, cursor = connect()
     material = pd.read_sql(f"SELECT * FROM materials WHERE brand_of_material = '{brand}'", db)
     db.close()
-    index = material.loc[0]["index_of_material_class"]
-    class_ = material.loc[0]["class_of_material"]
-    subclass = material.loc[0]["subclass_of_material"]
-    return index, class_, subclass
+    return material.loc[0]["index_of_material_class"], \
+           material.loc[0]["class_of_material"], \
+           material.loc[0]["subclass_of_material"]
 
 
 def chem_struct(brand: str = "20") -> dict:
@@ -82,7 +81,7 @@ def chem_struct(brand: str = "20") -> dict:
         return chemical_composition.transpose().dropna().to_dict()[0]
 
 
-def hardness(brand: str = "20"):
+def hardness(brand: str = "20") -> pd.DataFrame:
     """Запрашивает из БД твердость материала.
 
     Parameters:
@@ -102,7 +101,7 @@ def hardness(brand: str = "20"):
             return get_table_hardness(brand=brand, text_hardness=hardness["hardness"][0])
 
 
-def tensile_strength(brand: str = "20"):
+def tensile_strength(brand: str = "20") -> pd.DataFrame:
     """Запрашивает из БД предел прочности.
 
     Parameters:
