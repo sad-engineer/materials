@@ -21,6 +21,23 @@ from materials.find import tensile_strength
 from materials.obj.material import Material
 from materials.obj.material import MaterialData
 from materials.obj.workpiece_material import WorkpieceMaterial
-from materials.obj.notifier import Notifier
-from materials.obj.file_printer import FilePrinter
-from materials.obj.logger import Logger
+# from materials.obj.notifier import Notifier
+# from materials.obj.file_printer import FilePrinter
+# from materials.obj.logger import Logger
+
+
+if __name__ == "__main__":
+    from logger import Logger
+    from logger import StandardResultTerminalPrinter, StandardObjectTerminalPrinter
+    from logger import StandardResultFilePrinter, StandardObjectFilePrinter
+
+    logger = Logger()
+    file_printer = StandardResultTerminalPrinter
+    # file_printer = StandardObjectTerminalPrinter
+    # file_printer = StandardResultFilePrinter
+    # file_printer = StandardObjectFilePrinter
+    file_printer.DECODING = DECODING
+
+    material = WorkpieceMaterial()
+    print(material)
+    logger.log(material, notifier=file_printer, message='### Параметры материала ###')
