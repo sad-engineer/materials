@@ -5,26 +5,14 @@ import sqlite3
 import pandas as pd
 from typing import Optional, Union
 
-from materials.obj.constants import PATH_DB_FOR_MAT as PATH_DB
-from materials.obj.constants import NAMES_OF_WORKPIECE as NAMES_WP
-from materials.obj.constants import INDEXES_OF_WORKPIECE as INDEXES_WP
-from materials.obj.constants import NAMES_OF_HEAT_TREATMENT as NAMES_HT
-from materials.obj.constants import INDEXES_OF_HEAT_TREATMENT as INDEXES_HT
-from materials.obj.exceptions import ReceivedEmptyDataFrame
-from materials.obj.exceptions import UnexpectedDataInDataFrame
-from materials.obj.exceptions import InvalidValue
-
-
-def connect(filename: str = PATH_DB):
-    """ Создает и подключает базу данных если ее нет. Если БД есть - подключает ее
-
-    :param filename: Имя файла БД.
-    :return: Указатель на подключенную БД, на курсор БД
-    """
-    db = sqlite3.connect(filename)
-    cursor = db.cursor()
-    db.commit()
-    return db, cursor
+# from materials.obj.constants import PATH_DB_FOR_MAT as PATH_DB
+# from materials.obj.constants import NAMES_OF_WORKPIECE as NAMES_WP
+# from materials.obj.constants import INDEXES_OF_WORKPIECE as INDEXES_WP
+# from materials.obj.constants import NAMES_OF_HEAT_TREATMENT as NAMES_HT
+# from materials.obj.constants import INDEXES_OF_HEAT_TREATMENT as INDEXES_HT
+from service import ReceivedEmptyDataFrame
+# from service import UnexpectedDataInDataFrame
+from service import InvalidValue
 
 
 def get_average(data: pd.Series, order: int = 6) -> float:
@@ -63,7 +51,7 @@ def is_correct_record(record: pd.DataFrame):
         raise ReceivedEmptyDataFrame("Получена пустая таблица. Проверьте данные БД и запроса.")
     elif len(record) > 1:
         message = f"Таблица содержит больше одной строки. Проверь запрос, или данные БД. Должна быть одна строка"
-        raise UnexpectedDataInDataFrame(message)
+        raise InvalidValue(message)
 
 
 def is_correct_hardness(hardness: pd.DataFrame):
@@ -232,53 +220,53 @@ def get_range_for_str(rvalue: str) -> tuple:
         return get_range_for_list(rvalue)
 
 
-def is_brand_in_database(brand: str) -> bool:
-    """ Уточняет, есть ли материал "brand" в БД
-
-    :param brand: проверяемый материал
-    :return: True, если материал имеется в базе данных
-    """
-    db, cursor = connect()
-    materials = pd.read_sql(f"SELECT brand_of_material FROM materials ", db)
-    db.close()
-    return brand in set(materials["brand_of_material"])
-
-
-def check_workpiece(workpiece: Union[str, int]) -> Union[str, int]:
-    """ Проверяет значение типа заготовки
-
-    :param workpiece: тип заготовки.
-    :return: значение типа заготовки, если оно удовлетворяет условиям проверки.
-    """
-    if isinstance(workpiece, int):
-        if workpiece in NAMES_WP:
-            return workpiece
-        else:
-            raise InvalidValue(f"Не верный индекс типа поверхности заготовки: {workpiece=}.")
-    elif isinstance(workpiece, str):
-        if workpiece in INDEXES_WP:
-            return INDEXES_WP[workpiece]
-        else:
-            raise InvalidValue(f"Не верный тип поверхности заготовки термообработки: {workpiece=}.")
-    else:
-        raise InvalidValue(f"Не верный тип поверхности заготовки термообработки: {workpiece=}.")
+# def is_brand_in_database(brand: str) -> bool:
+#     """ Уточняет, есть ли материал "brand" в БД
+#
+#     :param brand: проверяемый материал
+#     :return: True, если материал имеется в базе данных
+#     """
+#     db, cursor = connect()
+#     materials = pd.read_sql(f"SELECT brand FROM materials ", db)
+#     db.close()
+#     return brand in set(materials["brand_of_material"])
 
 
-def check_heat_treatment(heat_treatment: Union[str, int]) -> Union[str, int]:
-    """ Проверяет значение вида термообработки
-
-    :param heat_treatment: вид термообработки.
-    :return: значение вида термообработки, если оно удовлетворяет условиям проверки.
-    """
-    if isinstance(heat_treatment, int):
-        if heat_treatment in NAMES_HT:
-            return heat_treatment
-        else:
-            raise InvalidValue(f"Не верный индекс вида термообработки {heat_treatment=}.")
-    elif isinstance(heat_treatment, str):
-        if heat_treatment in INDEXES_HT:
-            return INDEXES_HT[heat_treatment]
-        else:
-            raise InvalidValue(f"Не верный вид термообработки {heat_treatment=}.")
-    else:
-        raise InvalidValue("Вид термообработки не определен.")
+# def check_workpiece(workpiece: Union[str, int]) -> Union[str, int]:
+#     """ Проверяет значение типа заготовки
+#
+#     :param workpiece: тип заготовки.
+#     :return: значение типа заготовки, если оно удовлетворяет условиям проверки.
+#     """
+#     if isinstance(workpiece, int):
+#         if workpiece in NAMES_WP:
+#             return workpiece
+#         else:
+#             raise InvalidValue(f"Не верный индекс типа поверхности заготовки: {workpiece=}.")
+#     elif isinstance(workpiece, str):
+#         if workpiece in INDEXES_WP:
+#             return INDEXES_WP[workpiece]
+#         else:
+#             raise InvalidValue(f"Не верный тип поверхности заготовки термообработки: {workpiece=}.")
+#     else:
+#         raise InvalidValue(f"Не верный тип поверхности заготовки термообработки: {workpiece=}.")
+#
+#
+# def check_heat_treatment(heat_treatment: Union[str, int]) -> Union[str, int]:
+#     """ Проверяет значение вида термообработки
+#
+#     :param heat_treatment: вид термообработки.
+#     :return: значение вида термообработки, если оно удовлетворяет условиям проверки.
+#     """
+#     if isinstance(heat_treatment, int):
+#         if heat_treatment in NAMES_HT:
+#             return heat_treatment
+#         else:
+#             raise InvalidValue(f"Не верный индекс вида термообработки {heat_treatment=}.")
+#     elif isinstance(heat_treatment, str):
+#         if heat_treatment in INDEXES_HT:
+#             return INDEXES_HT[heat_treatment]
+#         else:
+#             raise InvalidValue(f"Не верный вид термообработки {heat_treatment=}.")
+#     else:
+#         raise InvalidValue("Вид термообработки не определен.")

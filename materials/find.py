@@ -75,7 +75,7 @@ def chem_struct(brand: str = "20") -> dict:
         содержит более одной строки или не содержит строк вообще, выкидывает ошибку.
     """
     db, cursor = connect()
-    chemical_composition = pd.read_sql(f"SELECT * FROM chemical_composition WHERE brand_of_material = '{brand}'", db)
+    chemical_composition = pd.read_sql(f"SELECT * FROM chemical_composition WHERE brand = '{brand}'", db)
     db.close()
     if is_correct_record(chemical_composition):
         return chemical_composition.transpose().dropna().to_dict()[0]
@@ -91,7 +91,7 @@ def hardness(brand: str = "20") -> pd.DataFrame:
         Возвращает таблицу с твердостью материала для различных условий состояния материала.
     """
     db, cursor = connect()
-    hardness = pd.read_sql(f"SELECT * FROM hardness WHERE brand_of_material = '{brand}'", db)
+    hardness = pd.read_sql(f"SELECT * FROM hardness WHERE brand = '{brand}'", db)
     db.close()
 
     # Проверяем запрошенные данные. По наименованию материала, от БД должен приходить DataFrame, содержащий одну строку,
@@ -112,7 +112,7 @@ def tensile_strength(brand: str = "20") -> pd.DataFrame:
     """
     db, cursor = connect()
     mechanical_properties = pd.read_sql(
-        f"SELECT * FROM mechanical_properties WHERE brand_of_material = '{brand}'", db)
+        f"SELECT * FROM mechanical_properties WHERE brand = '{brand}'" , db)
     data = mechanical_properties["tensile_strength"]
     db.close()
     if is_correct_record(data):
