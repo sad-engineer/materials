@@ -6,6 +6,7 @@ import pandas as pd
 from materials.obj.finders import Finder
 from materials.scr.gen_fun import get_table_tensile_strength
 from materials.scr.gen_fun import get_table_hardness
+from materials.scr.gen_fun import get_average
 
 
 class ChemicalCompositionHandler:
@@ -23,11 +24,20 @@ class HardnessHandler:
     def __init__(self,
                  hardness_finder: Finder,
                  ):
-        self._hardness = hardness_finder
+        self._hardness_finder = hardness_finder
+        self.hardness_table = None
 
-    def by_brand(self, any_brand: str) -> pd.DataFrame:
-        hardness = self._hardness.by_brand(any_brand)[0]
-        return get_table_hardness(any_brand, hardness['hardness'])
+    def by_brand(self, any_brand: str) -> None:
+        hardness = self._hardness_finder.by_brand(any_brand)[0]
+        self.hardness_table = get_table_hardness(any_brand, hardness['hardness'])
+
+    @property
+    def table(self) -> pd.DataFrame:
+        return self.hardness_table
+
+    @property
+    def value(self) -> float:
+        return get_average(self.hardness_table['hardness'])
 
 
 class TensileStrengthHandler:
@@ -35,8 +45,16 @@ class TensileStrengthHandler:
                  mechanical_properties_finder: Finder,
                  ):
         self._mechanical_properties = mechanical_properties_finder
+        self.tensile_strength_table = None
 
     def by_brand(self, any_brand: str) -> pd.DataFrame:
         mechanical_properties = self._mechanical_properties.by_brand(any_brand)[0]
-        return get_table_tensile_strength(mechanical_properties['tensile_strength'])
+        self.tensile_strength_table = get_table_tensile_strength(mechanical_properties['tensile_strength'])
 
+    @property
+    def table(self) -> pd.DataFrame:
+        return self.tensile_strength_table
+
+    @property
+    def value(self) -> float:
+        return get_average(self.tensile_strength_table['tensile_strength'])
