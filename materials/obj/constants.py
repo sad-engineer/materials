@@ -13,7 +13,7 @@ DEFAULT_SETTINGS_FOR_MATERIAL = {
     "brand": "20",
     "type_of_heat_treatment": None,
     "hrc": None,
-    "workpiece": 2,
+    "workpiece": 0,
 }
 DEFAULT_BRAND = DEFAULT_SETTINGS_FOR_MATERIAL["brand"]
 # =====================================================================================================================

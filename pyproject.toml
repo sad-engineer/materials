@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "materials"
-version = "0.1.19"
+version = "0.1.29"
 description = ""
 authors = ["Andrey Nikolaevich Korenyuk <korenyuk.a.n@mail.ru>"]
 license = "LICENSE.txt"
@@ -11,6 +11,7 @@ packages = [{include = "materials"}]
 python = "^3.9"
 pandas = "^1.5.1"
 service = {path = "I:/Программирование/Pro0.5-service_for_my_projects/dist/service-0.1.20.tar.gz"}
+pydantic = "^1.10.4"
 
 [build-system]
 requires = ["poetry-core"]

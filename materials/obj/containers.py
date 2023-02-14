@@ -5,7 +5,8 @@ from dependency_injector import containers, providers
 from service import Requester as RequesterContainer
 
 from materials.obj.finders import Finder
-from materials.obj.creators import Creator, ChemicalCompositionHandler, HardnessHandler, TensileStrengthHandler
+from materials.obj.handlers import ChemicalCompositionHandler, HardnessHandler, TensileStrengthHandler
+from materials.obj.creators import MaterialCreator, WorkpieceMaterialCreator
 from materials.obj.constants import DEFAULT_SETTINGS
 DB_PATH = DEFAULT_SETTINGS['path']
 DB_type = DEFAULT_SETTINGS['db_type']
@@ -177,13 +178,18 @@ class CreatorsContainer(containers.DeclarativeContainer):
         config=config.for_technological_properties,
     )
 
-    creator = providers.Factory(
-        Creator,
-        characteristics_finder=container_for_characteristics.find,
+    material_creator = providers.Factory(
+        MaterialCreator,
         chemical_composition_handler=container_for_chemical_composition.handler,
         hardness_handler=container_for_hardness.handler,
         materials_finder=container_for_materials.find,
         tensile_strength_handler=container_for_mechanical_properties.tensile_strength_handler,
-        technological_properties_finder=container_for_technological_properties.find,
     )
 
+    workpiece_material_creator = providers.Factory(
+        WorkpieceMaterialCreator,
+        chemical_composition_handler=container_for_chemical_composition.handler,
+        hardness_handler=container_for_hardness.handler,
+        materials_finder=container_for_materials.find,
+        tensile_strength_handler=container_for_mechanical_properties.tensile_strength_handler,
+    )

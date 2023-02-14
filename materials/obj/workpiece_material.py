@@ -4,7 +4,7 @@
 from typing import Optional, Union
 
 from materials.scr.gen_fun import check_workpiece, check_heat_treatment
-from materials.obj.material import Material
+from materials.obj.handlers import Material
 from materials.obj.constants import DEFAULT_NAMES_FOR_MATERIALS as DEFAULT_NAMES
 from materials.obj.constants import DEFAULT_SETTINGS_FOR_MATERIAL as DEFAULT_SETTINGS
 
@@ -87,36 +87,4 @@ class WorkpieceMaterial(Material):
                    workpiece=DEFAULT_SETTINGS["workpiece"],)
 
 
-# if __name__ == "__main__":
-    # material = WorkpieceMaterial()
-    # print(material.__doc__)
-    # print(material)
-    # #
-    # material.get_material_parameters("20")
-    # print(material)
-    # material.get_material_parameters("30")
-    # print(material)
-    # material.get_default_settings()
-    # print(material)
-    # print(material.type_of_heat_treatment)
-    # print(material.workpiece)
-    # print(material.hrc)
-    #
-    # material = WorkpieceMaterial(brand="35", heat_treatment=1, hrc=55, workpiece=2)
-    # print(material)
-    # print(material.type_of_heat_treatment)
-    # print(material.workpiece)
-    # print(material.hrc)
-    #
-    # material = WorkpieceMaterial()
-    # material.get_default_settings()
-    # print(material)
-    # print(material.type_of_heat_treatment)
-    # print(material.workpiece)
-    # print(material.hrc)
-    #
-    # material = WorkpieceMaterial.default_material()
-    # print(material)
-    # print(material.type_of_heat_treatment)
-    # print(material.workpiece)
-    # print(material.hrc)
+
