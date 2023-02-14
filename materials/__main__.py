@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------------------------------------------------
-from materials.obj.containers import CreatorsContainer
+from materials.obj.containers import Container
 
 
 def main(brand: str):
-    workpiece_creator = CreatorsContainer().workpiece_material_creator()
+    workpiece_creator = Container().workpiece_material_creator()
     materiall = workpiece_creator.create(brand)
     materiall.hrc = 50.5
     materiall.heat_treatment = 2

@@ -7,6 +7,7 @@ from service import Requester as RequesterContainer
 from materials.obj.finders import Finder
 from materials.obj.handlers import ChemicalCompositionHandler, HardnessHandler, TensileStrengthHandler
 from materials.obj.creators import MaterialCreator, WorkpieceMaterialCreator
+from materials.obj.entities import Material, WorkpieceMaterial
 from materials.obj.constants import DEFAULT_SETTINGS
 DB_PATH = DEFAULT_SETTINGS['path']
 DB_type = DEFAULT_SETTINGS['db_type']
@@ -76,7 +77,6 @@ class Hardness(RequesterContainer):
     )
 
 
-
 @containers.copy(RequesterContainer)
 class Materials(RequesterContainer):
     default_settings = providers.Object(
@@ -136,7 +136,7 @@ class TechnologicalProperties(RequesterContainer):
     )
 
 
-class CreatorsContainer(containers.DeclarativeContainer):
+class Container(containers.DeclarativeContainer):
     default_settings = providers.Object({
         'for_characteristics': {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'},
         'for_chemical_composition': {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'},
@@ -192,4 +192,12 @@ class CreatorsContainer(containers.DeclarativeContainer):
         hardness_handler=container_for_hardness.handler,
         materials_finder=container_for_materials.find,
         tensile_strength_handler=container_for_mechanical_properties.tensile_strength_handler,
+    )
+
+    material = providers.Factory(
+        Material
+    )
+
+    workpiece_material = providers.Factory(
+        WorkpieceMaterial
     )
