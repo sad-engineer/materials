@@ -8,6 +8,7 @@ from materials.obj.finders import Finder
 from materials.obj.handlers import ChemicalCompositionHandler, HardnessHandler, TensileStrengthHandler
 from materials.obj.creators import MaterialCreator, WorkpieceMaterialCreator
 from materials.obj.entities import Material, WorkpieceMaterial
+from materials.obj.listers import Lister
 from materials.obj.constants import DEFAULT_SETTINGS
 DB_PATH = DEFAULT_SETTINGS['path']
 DB_type = DEFAULT_SETTINGS['db_type']
@@ -194,6 +195,11 @@ class Container(containers.DeclarativeContainer):
         tensile_strength_handler=container_for_mechanical_properties.tensile_strength_handler,
     )
 
+    material_lister = providers.Factory(
+        Lister,
+        material_creator.provider
+    )
+
     material = providers.Factory(
         Material
     )
@@ -201,3 +207,5 @@ class Container(containers.DeclarativeContainer):
     workpiece_material = providers.Factory(
         WorkpieceMaterial
     )
+
+

@@ -11,7 +11,7 @@ from typing import Optional, Union
 # from materials.obj.constants import NAMES_OF_HEAT_TREATMENT as NAMES_HT
 # from materials.obj.constants import INDEXES_OF_HEAT_TREATMENT as INDEXES_HT
 from service import ReceivedEmptyDataFrame
-# from service import UnexpectedDataInDataFrame
+# from service import ReceivedEmptyDataFrame
 from service import InvalidValue
 
 
@@ -100,8 +100,12 @@ def get_table_hardness(brand: str, text_hardness: str) -> pd.DataFrame:
                 data_row["condition"] = get_condition(brand, item)
             else:
                 raise InvalidValue("В строке передан неверный текст.")
-        data_table[rows.index(row)] = data_row
-    return pd.DataFrame(data_table).T
+        if "hardness" in data_row:
+            data_table[rows.index(row)] = data_row
+    data_table = pd.DataFrame(data_table).T
+    if data_table.empty:
+        raise ReceivedEmptyDataFrame("Таблица твердости не содержит значений твердости")
+    return data_table
 
 
 def get_table_tensile_strength(text_tensile_strength: str) -> pd.DataFrame:

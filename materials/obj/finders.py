@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------------------------------------------------
 import pandas as pd
+from typing import Any
 
 from service import RecordRequester
 
@@ -11,21 +12,25 @@ class Finder:
     def __init__(self, record_requester: RecordRequester):
         self._requester = record_requester
 
-    def by_brand(self, brand: str) -> pd.DataFrame:
-        """ Возвращает найденные записи по значению диаметра в виде таблицы pd.DataFrame.
+    def by_brand(self, brand: str) -> Any:
+        """ Возвращает найденные записи по наименованию материала. Формат возвращаемых данных определяет self._requester
 
         Аргументы
         ---------
-        dia: str
-            Значение диаметра инструмента
-        dia_out: str
-            Значение диаметра инструмента (указывается для насадных инструментов)
+        brand : str : Наименование материала
+
         """
-        df = self._requester.get_records({"brand": brand})
-        return df if df else None
+        records = self._requester.get_records({"brand": brand})
+        return records if records else None
+
+    # @property
+    # def all(self) -> Any:
+    #     """ Возвращает все записи. Формат возвращаемых данных определяет self._requester"""
+    #     df = self._requester.get_all_records
+    #     return df if df else None
 
     @property
-    def all(self) -> pd.DataFrame:
-        """ Возвращает все записи в виде таблицы pd.DataFrame """
-        df = self._requester.get_all_records
-        return df if df else None
+    def all(self) -> Any:
+        """ Возвращает все записи. Формат возвращаемых данных определяет self._requester"""
+        for index, record in self._requester.get_all_records.items():
+            yield record

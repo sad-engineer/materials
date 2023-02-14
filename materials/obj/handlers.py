@@ -7,6 +7,7 @@ from materials.obj.finders import Finder
 from materials.scr.gen_fun import get_table_tensile_strength
 from materials.scr.gen_fun import get_table_hardness
 from materials.scr.gen_fun import get_average
+from service import ReceivedEmptyDataFrame
 
 
 class ChemicalCompositionHandler:
@@ -28,8 +29,11 @@ class HardnessHandler:
         self.hardness_table = None
 
     def by_brand(self, any_brand: str) -> None:
-        hardness = self._hardness_finder.by_brand(any_brand)[0]
-        self.hardness_table = get_table_hardness(any_brand, hardness['hardness'])
+        hardness = self._hardness_finder.by_brand(any_brand)[0]['hardness']
+        if hardness:
+            self.hardness_table = get_table_hardness(any_brand, hardness)
+        else:
+            raise ReceivedEmptyDataFrame("Таблица твердости не найдена.")
 
     @property
     def table(self) -> pd.DataFrame:
@@ -48,8 +52,11 @@ class TensileStrengthHandler:
         self.tensile_strength_table = None
 
     def by_brand(self, any_brand: str) -> pd.DataFrame:
-        mechanical_properties = self._mechanical_properties.by_brand(any_brand)[0]
-        self.tensile_strength_table = get_table_tensile_strength(mechanical_properties['tensile_strength'])
+        tensile_strength = self._mechanical_properties.by_brand(any_brand)[0]['tensile_strength']
+        if tensile_strength:
+            self.tensile_strength_table = get_table_tensile_strength(tensile_strength)
+        else:
+            raise ReceivedEmptyDataFrame("Таблица пределов прочности не найдена.")
 
     @property
     def table(self) -> pd.DataFrame:
