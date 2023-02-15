@@ -200,6 +200,11 @@ class Container(containers.DeclarativeContainer):
         material_creator.provider
     )
 
+    workpiece_material_lister = providers.Factory(
+        Lister,
+        workpiece_material_creator.provider
+    )
+
     material = providers.Factory(
         Material
     )

@@ -10,7 +10,7 @@ from materials.obj.handlers import HardnessHandler
 from materials.obj.handlers import TensileStrengthHandler
 from materials.obj.entities import Material
 from materials.obj.entities import WorkpieceMaterial
-from materials.obj.constants import DEFAULT_SETTINGS_FOR_MATERIAL as DEFAULT_SETTINGS
+from materials.obj.constants import DEFAULT_SETTINGS_FOR_WORKPIECE_MATERIAL as DEFAULT_SETTINGS
 from materials.obj.constants import DEFAULT_NAMES_FOR_MATERIALS as DEFAULT_NAMES
 from materials.obj.constants import CLASSES_MATERIALS
 from service import ReceivedEmptyDataFrame

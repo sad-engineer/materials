@@ -9,13 +9,13 @@ DEFAULT_SETTINGS = {
 }
 # =====================================================================================================================
 # Настройки для начальных данных
-DEFAULT_SETTINGS_FOR_MATERIAL = {
+DEFAULT_SETTINGS_FOR_WORKPIECE_MATERIAL = {
     "brand": "20",
     "type_of_heat_treatment": None,
     "hrc": None,
     "workpiece": 0,
 }
-DEFAULT_BRAND = DEFAULT_SETTINGS_FOR_MATERIAL["brand"]
+DEFAULT_BRAND = DEFAULT_SETTINGS_FOR_WORKPIECE_MATERIAL["brand"]
 # =====================================================================================================================
 # Список материалов по умолчанию (key - индекс класса материала)
 DEFAULT_NAMES_FOR_MATERIALS = {0: "20ГЛ", 1: "Р9",   2: "20",     3: "10880",  4: "15Х5М",  5: "20Х17Н2",
