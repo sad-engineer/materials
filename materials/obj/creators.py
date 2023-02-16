@@ -30,7 +30,7 @@ class Creator(ABC):
         self._materials = materials_finder
         self._tensile_strength = tensile_strength_handler
 
-        self.date = {}
+        self.data = {}
     @abstractmethod
     def _get_data(self, any_brand: str): pass
 
@@ -62,43 +62,42 @@ class MaterialCreator(Creator):
         self._materials = materials_finder
         self._tensile_strength = tensile_strength_handler
 
-        self.date = {}
+        self.data = {}
 
     def _get_data(self, any_brand: str):
         raw_date = self._materials.by_brand(any_brand)[0]
-        self.date['brand'] = raw_date['brand']
-        self.date['index_class'] = raw_date['index_of_material_class']
-        self.date['class_'] = raw_date['class_of_material']
-        if self.date['class_'] == "Чугун":
-            self.date['class_'] = CLASSES_MATERIALS[self.date['index_class']]
-        self.date['subclass'] = raw_date['subclass_of_material']
-        self.date['chemical_composition'] = self._chemical_composition.by_brand(any_brand)
+        self.data['brand'] = raw_date['brand']
+        self.data['class_'] = raw_date['class_of_material']
+        if self.data['class_'] == "Чугун":
+            self.data['class_'] = CLASSES_MATERIALS[raw_date['index_of_material_class']]
+        self.data['subclass'] = raw_date['subclass_of_material']
+        self.data['chemical_composition'] = self._chemical_composition.by_brand(any_brand)
         try:
             self._hardness.by_brand(any_brand)
         except ReceivedEmptyDataFrame:
             # Таблицы твердости в БД существуют не для всех материалов
             # Если таблица твердости не найдена, берем твердость для материала по умолчанию.
-            default_brand = DEFAULT_NAMES[self.date['index_class']]
+            default_brand = DEFAULT_NAMES[raw_date['index_of_material_class']]
             self._hardness.by_brand(default_brand)
             # TODO: Ошибку в лог
             # print(f"Твердость материала {any_brand} не найдена. Принята для материала {default_brand}")
-        self.date['hardness_tabl_mpa'] = self._hardness.table
-        self.date['hardness_mpa'] = self._hardness.value
+        self.data['hardness_tabl_mpa'] = self._hardness.table
+        self.data['hardness_mpa'] = self._hardness.value
         try:
             self._tensile_strength.by_brand(any_brand)
         except ReceivedEmptyDataFrame:
             # Таблицы пределов прочности в БД существуют не для всех материалов
             # Если таблица пределов прочности не найдена, берем предел прочности для материала по умолчанию.
-            default_brand = DEFAULT_NAMES[self.date['index_class']]
+            default_brand = DEFAULT_NAMES[raw_date['index_of_material_class']]
             self._tensile_strength.by_brand(default_brand)
             # TODO: Ошибку в лог
             # print(f"Предел прочности материала {any_brand} не найден. Принят для материала {default_brand}")
-        self.date['tensile_strength_tabl_mpa'] = self._tensile_strength.table
-        self.date['tensile_strength_mpa'] = self._tensile_strength.value
+        self.data['tensile_strength_tabl_mpa'] = self._tensile_strength.table
+        self.data['tensile_strength_mpa'] = self._tensile_strength.value
 
     def create(self, any_brand: str):
         self._get_data(any_brand)
-        return Material(**self.date)
+        return Material.parse_obj(self.data)
 
     @property
     def create_all(self):
@@ -132,21 +131,13 @@ class WorkpieceMaterialCreator(MaterialCreator):
                workpiece: Optional[Union[int, str]] = DEFAULT_SETTINGS["workpiece"],
                hrc: Optional[int] = DEFAULT_SETTINGS["hrc"]):
         self._get_data(any_brand)
-        self.date['heat_treatment'] = heat_treatment
-        self.date['workpiece'] = workpiece
-        self.date['hrc'] = hrc
-        return WorkpieceMaterial(**self.date)
+        self.data['heat_treatment'] = heat_treatment
+        self.data['workpiece'] = workpiece
+        self.data['hrc'] = hrc
+        return WorkpieceMaterial.parse_obj(self.data)
 
     @property
     def create_all(self):
         for row in self._materials.all:
             brand = row["brand"]
             yield self.create(brand)
-
-
-
-
-
-
-
-

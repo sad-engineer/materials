@@ -10,6 +10,7 @@ def main(brand: str):
     start_time = time.time()
     workpiece_creator = Container().workpiece_material_creator()
     materiall = workpiece_creator.create(brand)
+    print(materiall)
     materiall.hrc = 50.5
     materiall.heat_treatment = 2
     end_time = time.time()
