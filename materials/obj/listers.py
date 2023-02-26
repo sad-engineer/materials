@@ -20,4 +20,5 @@ class Lister:
 
     @property
     def all(self) -> list:
-        return [material for material in self._creator().create_all]
+        materials = self._creator()._materials.all
+        return [self._creator().create(material['brand']) for material in materials]

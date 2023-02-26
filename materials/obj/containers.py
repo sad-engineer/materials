@@ -17,36 +17,28 @@ DB_type = DEFAULT_SETTINGS['db_type']
 @containers.copy(RequesterContainer)
 class CharacteristicsOfMaterial(RequesterContainer):
     default_settings = providers.Object(
-        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'}
+        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict',
+         'tablename': "characteristics_of_material"}
     )
     RequesterContainer.config.from_dict(default_settings())
 
-    requester_chars = providers.Factory(
-        RequesterContainer.requester,
-        tablename="characteristics_of_material",
-        )
-
     find = providers.Factory(
         Finder,
-        requester_chars,
+        RequesterContainer.requester,
     )
 
 
 @containers.copy(RequesterContainer)
 class ChemicalComposition(RequesterContainer):
     default_settings = providers.Object(
-        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'}
+        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict',
+         'tablename': "chemical_composition"}
     )
     RequesterContainer.config.from_dict(default_settings())
 
-    requester = providers.Factory(
-        RequesterContainer.requester,
-        tablename="chemical_composition",
-    )
-
     finder = providers.Factory(
         Finder,
-        requester,
+        RequesterContainer.requester,
     )
 
     handler = providers.Factory(
@@ -58,18 +50,14 @@ class ChemicalComposition(RequesterContainer):
 @containers.copy(RequesterContainer)
 class Hardness(RequesterContainer):
     default_settings = providers.Object(
-        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'}
+        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict',
+         'tablename': "hardness"}
     )
     RequesterContainer.config.from_dict(default_settings())
 
-    requester_hardness = providers.Singleton(
-        RequesterContainer.requester,
-        tablename="hardness",
-    )
-
     finder = providers.Factory(
         Finder,
-        requester_hardness,
+        RequesterContainer.requester,
     )
 
     handler = providers.Factory(
@@ -81,36 +69,28 @@ class Hardness(RequesterContainer):
 @containers.copy(RequesterContainer)
 class Materials(RequesterContainer):
     default_settings = providers.Object(
-        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'}
+        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict',
+         'tablename': "materials"}
     )
     RequesterContainer.config.from_dict(default_settings())
 
-    requester_mats = providers.Singleton(
-        RequesterContainer.requester,
-        tablename="materials",
-    )
-
     find = providers.Factory(
         Finder,
-        requester_mats,
+        RequesterContainer.requester,
     )
 
 
 @containers.copy(RequesterContainer)
 class MechanicalProperties(RequesterContainer):
     default_settings = providers.Object(
-        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'}
+        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict',
+         'tablename': "mechanical_properties"}
     )
     RequesterContainer.config.from_dict(default_settings())
 
-    requester_mech_props = providers.Singleton(
-        RequesterContainer.requester,
-        tablename="mechanical_properties",
-    )
-
     finder = providers.Factory(
         Finder,
-        requester_mech_props,
+        RequesterContainer.requester,
     )
 
     tensile_strength_handler = providers.Factory(
@@ -122,29 +102,33 @@ class MechanicalProperties(RequesterContainer):
 @containers.copy(RequesterContainer)
 class TechnologicalProperties(RequesterContainer):
     default_settings = providers.Object(
-        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'}
+        {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict',
+         'tablename': "technological_properties"}
     )
     RequesterContainer.config.from_dict(default_settings())
 
-    requester_tech_props = providers.Singleton(
-        RequesterContainer.requester,
-        tablename="technological_properties",
-    )
-
     find = providers.Factory(
         Finder,
-        requester_tech_props,
+        RequesterContainer.requester,
     )
 
 
 class Container(containers.DeclarativeContainer):
     default_settings = providers.Object({
-        'for_characteristics': {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'},
-        'for_chemical_composition': {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'},
-        'for_hardness': {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'},
-        'for_materials': {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'},
-        'for_mechanical_properties': {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'},
-        'for_technological_properties': {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict'},
+        'for_characteristics':
+            {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict',
+             'tablename': "characteristics_of_material"},
+        'for_chemical_composition':
+            {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict', 'tablename': "chemical_composition"},
+        'for_hardness':
+            {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict', 'tablename': "hardness"},
+        'for_materials':
+            {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict', 'tablename': "materials"},
+        'for_mechanical_properties':
+            {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict', 'tablename': "mechanical_properties"},
+        'for_technological_properties':
+            {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict',
+             'tablename': "technological_properties"},
     })
     config = providers.Configuration()
     config.from_dict(default_settings())
