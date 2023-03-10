@@ -13,8 +13,8 @@ from materials.obj.entities import WorkpieceMaterial
 from materials.obj.constants import DEFAULT_SETTINGS_FOR_WORKPIECE_MATERIAL as DEFAULT_SETTINGS
 from materials.obj.constants import DEFAULT_NAMES_FOR_MATERIALS as DEFAULT_NAMES
 from materials.obj.constants import CLASSES_MATERIALS
-from materials.obj.decorators import logged
 from service import ReceivedEmptyDataFrame
+from service import logged
 
 
 @logged
@@ -101,7 +101,6 @@ class MaterialCreator(Creator):
             # Если таблица пределов прочности не найдена, берем предел прочности для материала по умолчанию.
             default_brand = DEFAULT_NAMES[raw_date['index_of_material_class']]
             self._tensile_strength.by_brand(default_brand)
-            # TODO: Ошибку в лог
             self.info(f"Предел прочности материала {any_brand} не найден. Принят для материала {default_brand}")
         self.data['tensile_strength_tabl_mpa'] = self._tensile_strength.table
         self.data['tensile_strength_mpa'] = self._tensile_strength.value

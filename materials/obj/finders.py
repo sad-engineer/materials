@@ -4,7 +4,7 @@
 from typing import Any
 
 from service import RecordRequester
-from materials.obj.decorators import logged
+from service import logged
 
 
 @logged

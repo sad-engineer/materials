@@ -4,7 +4,7 @@
 from typing import Callable, Union
 from materials.obj.creators import Creator
 from materials.obj.constants import CLASSES_MATERIALS
-from materials.obj.decorators import logged
+from service import logged
 
 
 @logged

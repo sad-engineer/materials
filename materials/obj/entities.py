@@ -9,7 +9,6 @@ from materials.obj.constants import CLASSES_MATERIALS, HEAT_TREATMENT, WORKPIECE
 from materials.obj.fields_types import InMaterialClass, InTypeWorkpiece, InHeatTreatment
 
 
-
 class Material(BaseModel):
     """Класс 'Материал'.
 
