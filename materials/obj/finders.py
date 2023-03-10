@@ -4,12 +4,17 @@
 from typing import Any
 
 from service import RecordRequester
+from materials.obj.decorators import logged
 
 
+@logged
 class Finder:
     """ Ищет записи в БД по конкретным параметрам."""
+
     def __init__(self, record_requester: RecordRequester):
         self._requester = record_requester
+
+        self.debug(f"""Создан {self.__class__.__name__} со следующими зависимостями: {record_requester=}""")
 
     def by_brand(self, brand: str) -> Any:
         """ Возвращает найденные записи по наименованию материала. Формат возвращаемых данных определяет self._requester
@@ -18,6 +23,7 @@ class Finder:
         brand : str : Наименование материала
         """
         records = self._requester.get_records({"brand": brand})
+        self.debug(f"""По ключу {brand=} найдено записей: {len(records)}""")
         return records if records else None
 
     @property

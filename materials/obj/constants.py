@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from os import path
 # =====================================================================================================================
 # Настройки БД
 DEFAULT_SETTINGS = {
@@ -51,3 +52,26 @@ DECODING = {"brand": "Наименование материала: {obj}.",
             "tabl_tensile_strength_mpa": "Таблица пределов прочности (в МПа): {obj}",
             "chemical_composition": "Химический состав материала: {obj}"
             }
+# =====================================================================================================================
+'I:\\Программирование\\Pro0.1-materials\\materials\\obj'
+LOG_FILE_PATH = path.dirname(path.abspath(__file__)).replace('obj', 'logging.ini')
+
+
+LOGGING = {
+    'version': 1,
+    'bisable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/logs/log.log'
+        }
+    },
+    'loggers': {
+        'creators': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
+    }
+}

@@ -7,29 +7,6 @@ from pydantic import BaseModel, validator
 from materials.obj.constants import CLASSES_MATERIALS, HEAT_TREATMENT, WORKPIECE
 
 
-# class FieldMaterialClass:
-#     CLASSES_MATERIALS: ClassVar[dict] = CLASSES_MATERIALS
-#
-#     @classmethod
-#     def validate(cls, value):
-#         if not isinstance(value, (int, str)):
-#             raise ValueError(f"Ожидается целое число или строка, получено: {type(value)}")
-#         elif isinstance(value, str):
-#             if value not in cls.CLASSES_MATERIALS.values():
-#                 raise ValueError(f"Строковое значение должно быть из списка {list(cls.CLASSES_MATERIALS.values())}, "
-#                                  f"получено: {value}")
-#             return {v: k for k, v in cls.CLASSES_MATERIALS.items()}[value]
-#         elif isinstance(value, int):
-#             if value not in cls.CLASSES_MATERIALS:
-#                 raise ValueError(f"Значение должно быть из списка {list(cls.CLASSES_MATERIALS.keys())}, "
-#                                  f"получено: {value}")
-#             return value
-#
-#     @classmethod
-#     def __get_validators__(cls):
-#         yield cls.validate
-
-
 class ValueFromDict:
     """Для определения полей, значение которых должны быть из словаря доступных значений"""
     AVAILABLE_VALUES: ClassVar[dict] = {}

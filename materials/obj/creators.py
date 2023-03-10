@@ -13,9 +13,11 @@ from materials.obj.entities import WorkpieceMaterial
 from materials.obj.constants import DEFAULT_SETTINGS_FOR_WORKPIECE_MATERIAL as DEFAULT_SETTINGS
 from materials.obj.constants import DEFAULT_NAMES_FOR_MATERIALS as DEFAULT_NAMES
 from materials.obj.constants import CLASSES_MATERIALS
+from materials.obj.decorators import logged
 from service import ReceivedEmptyDataFrame
 
 
+@logged
 class Creator(ABC):
     """ Базовый класс, для наследования всеми креаторами"""
     @abstractmethod
@@ -31,15 +33,25 @@ class Creator(ABC):
         self._tensile_strength = tensile_strength_handler
 
         self.data = {}
-    @abstractmethod
-    def _get_data(self, any_brand: str): pass
+
+        self.debug(f"""Создан {self.__class__.__name__} со следующими зависимостями:
+            {chemical_composition_handler=},
+            {hardness_handler=},
+            {materials_finder=},
+            {tensile_strength_handler=} """)
 
     @abstractmethod
-    def create(self, any_brand: str): pass
+    def _get_data(self, any_brand: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    def create(self, any_brand: str):
+        raise NotImplementedError
 
     @property
     @abstractmethod
-    def create_all(self): pass
+    def create_all(self):
+        raise NotImplementedError
 
 
 class MaterialCreator(Creator):
@@ -79,8 +91,7 @@ class MaterialCreator(Creator):
             # Если таблица твердости не найдена, берем твердость для материала по умолчанию.
             default_brand = DEFAULT_NAMES[raw_date['index_of_material_class']]
             self._hardness.by_brand(default_brand)
-            # TODO: Ошибку в лог
-            # print(f"Твердость материала {any_brand} не найдена. Принята для материала {default_brand}")
+            self.info(f"Твердость материала {any_brand} не найдена. Принята для материала {default_brand}")
         self.data['hardness_tabl_mpa'] = self._hardness.table
         self.data['hardness_mpa'] = self._hardness.value
         try:
@@ -91,16 +102,20 @@ class MaterialCreator(Creator):
             default_brand = DEFAULT_NAMES[raw_date['index_of_material_class']]
             self._tensile_strength.by_brand(default_brand)
             # TODO: Ошибку в лог
-            # print(f"Предел прочности материала {any_brand} не найден. Принят для материала {default_brand}")
+            self.info(f"Предел прочности материала {any_brand} не найден. Принят для материала {default_brand}")
         self.data['tensile_strength_tabl_mpa'] = self._tensile_strength.table
         self.data['tensile_strength_mpa'] = self._tensile_strength.value
 
     def create(self, any_brand: str):
+        self.debug(f"Получен запрос на создание материала {any_brand}")
         self._get_data(any_brand)
-        return Material.parse_obj(self.data)
+        material = Material.parse_obj(self.data)
+        self.debug(f"Материал {any_brand} создан: {material.__class__}")
+        return material
 
     @property
     def create_all(self):
+        self.debug(f"Получен запрос на создание всех материалов БД")
         for row in self._materials.all:
             brand = row["brand"]
             yield self.create(brand)
@@ -130,14 +145,18 @@ class WorkpieceMaterialCreator(MaterialCreator):
                heat_treatment: Optional[Union[int, str]] = DEFAULT_SETTINGS["type_of_heat_treatment"],
                workpiece: Optional[Union[int, str]] = DEFAULT_SETTINGS["workpiece"],
                hrc: Optional[int] = DEFAULT_SETTINGS["hrc"]):
+        self.debug(f"Получен запрос на создание материала {any_brand}")
         self._get_data(any_brand)
         self.data['heat_treatment'] = heat_treatment
         self.data['workpiece'] = workpiece
         self.data['hrc'] = hrc
-        return WorkpieceMaterial.parse_obj(self.data)
+        workpiece_material = WorkpieceMaterial.parse_obj(self.data)
+        self.debug(f"Материал {any_brand} создан: {workpiece_material.__class__}")
+        return workpiece_material
 
     @property
     def create_all(self):
+        self.debug(f"Получен запрос на создание всех материалов БД")
         for row in self._materials.all:
             brand = row["brand"]
             yield self.create(brand)
