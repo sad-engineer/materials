@@ -1,32 +1,57 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------------------------------------------------
-from typing import Any
+from typing import Any, Callable
 
 from service import RecordRequester
 from service import logged
+from service import output_debug_message_for_init_method as debug_message_for_init
+
+
+def output_debug_message_with_kwargs_and_length(message: str):
+    """ Выводит в лог сообщение message"""
+    def decorator(func):
+        def wrapper(self, *args, **kwargs):
+            result = func(self, *args, **kwargs)
+            self.debug(message) if message.find("{") == -1 else self.debug(
+                message.format('; '.join([f'{k}= {v}' for k, v in kwargs.items()]), len(result)))
+            return result
+        return wrapper
+    return decorator
+
+
+def output_debug_message_with_with_length(message: str):
+    """ Выводит в лог сообщение message"""
+    def decorator(func):
+        def wrapper(self, *args, **kwargs):
+            result = func(self, *args, **kwargs)
+            self.debug(message) if message.find("{") == -1 else self.debug(
+                message.format(len(result)))
+            return result
+        return wrapper
+    return decorator
 
 
 @logged
 class Finder:
     """ Ищет записи в БД по конкретным параметрам."""
 
-    def __init__(self, record_requester: RecordRequester):
-        self._requester = record_requester
+    @debug_message_for_init()
+    def __init__(self, record_requester: Callable[..., RecordRequester]):
+        self._requester = record_requester()
 
-        self.debug(f"""Создан {self.__class__.__name__} со следующими зависимостями: {record_requester=}""")
-
+    @output_debug_message_with_kwargs_and_length("По ключам {0}  найдено записей: {1}")
     def by_brand(self, brand: str) -> Any:
         """ Возвращает найденные записи по наименованию материала. Формат возвращаемых данных определяет self._requester
 
         Parameters:
-        brand : str : Наименование материала
+            brand : str : Наименование материала
         """
         records = self._requester.get_records({"brand": brand})
-        self.debug(f"""По ключу {brand=} найдено записей: {len(records)}""")
         return records if records else None
 
     @property
+    @output_debug_message_with_with_length("Инициирован поиск всех записей таблицы. Найдено записей: {}")
     def all(self) -> Any:
         """ Возвращает все записи. Формат возвращаемых данных определяет self._requester."""
         for index, record in self._requester.get_all_records.items():
@@ -36,3 +61,47 @@ class Finder:
     def available_values(self) -> Any:
         """ Возвращает наборы доступных в таблице БД значений по категориям."""
         return self._requester.available_values
+
+
+# =====================================================================================================================
+# Этот класс создан для читаемости debug сообщений
+class CharacteristicsFinder(Finder):
+    """ Ищет записи в БД по конкретным параметрам в таблице характеристик материалов"""
+    def __init__(self, record_requester: Callable[..., RecordRequester]):
+        super().__init__(record_requester=record_requester)
+
+
+# Этот класс создан для читаемости debug сообщений
+class ChemicalCompositionFinder(Finder):
+    """ Ищет записи в БД по конкретным параметрам в таблице химсостава"""
+    def __init__(self, record_requester: Callable[..., RecordRequester]):
+        super().__init__(record_requester=record_requester)
+
+
+# Этот класс создан для читаемости debug сообщений
+class HardnessFinder(Finder):
+    """ Ищет записи в БД по конкретным параметрам в таблице твердости"""
+    def __init__(self, record_requester: Callable[..., RecordRequester]):
+        super().__init__(record_requester=record_requester)
+
+
+# Этот класс создан для читаемости debug сообщений
+class MaterialsFinder(Finder):
+    """ Ищет записи в БД по конкретным параметрам в таблице общих характеристик материалов"""
+    def __init__(self, record_requester: Callable[..., RecordRequester]):
+        super().__init__(record_requester=record_requester)
+
+
+# Этот класс создан для читаемости debug сообщений
+class MechanicalPropertiesFinder(Finder):
+    """ Ищет записи в БД по конкретным параметрам в таблице механических свойств"""
+    def __init__(self, record_requester: Callable[..., RecordRequester]):
+        super().__init__(record_requester=record_requester)
+
+
+# Этот класс создан для читаемости debug сообщений
+class TechnologicalPropertiesFinder(Finder):
+    """ Ищет записи в БД по конкретным параметрам в таблице технических свойств"""
+
+    def __init__(self, record_requester: Callable[..., RecordRequester]):
+        super().__init__(record_requester=record_requester)
