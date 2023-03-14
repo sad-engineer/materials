@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------------------------------------------------
-from typing import Optional, Union, Any
+from typing import Optional, Any
 import pandas as pd
 from pydantic import BaseModel, validator
+from collections import namedtuple
 
 from materials.obj.constants import CLASSES_MATERIALS, HEAT_TREATMENT, WORKPIECE
 from materials.obj.fields_types import InMaterialClass, InTypeWorkpiece, InHeatTreatment
+
+
+ErrorWithData = namedtuple('ErrorWithData', ['err', 'name', 'params'])   # для сохранения данных с ошибкой
 
 
 class Material(BaseModel):
