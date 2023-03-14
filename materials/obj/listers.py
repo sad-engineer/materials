@@ -1,30 +1,49 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------------------------------------------------
-from typing import Callable, Union
+from typing import Callable
+
+from service import logged
+from service import output_debug_message_for_init_method as debug_message_for_init
+
 from materials.obj.creators import Creator
 from materials.obj.constants import CLASSES_MATERIALS
-from service import logged
+from materials.obj.finders import Finder
+from materials.obj.fields_types import InMaterialClass
+
+
+def output_debug_message(message: str):
+    """ Выводит в лог сообщение message"""
+    def decorator(func):
+        def wrapper(self, *args, **kwargs):
+            self.debug(message) if message.find("{") == -1 else self.debug(
+                message.format('; '.join([f'{k}= {v}' for k, v in kwargs.items()])))
+            return func(self, *args, **kwargs)
+        return wrapper
+    return decorator
 
 
 @logged
 class Lister:
-    def __init__(self, creator: Callable[..., Creator]):
-        self._creator = creator
-        self.debug(f"""Создан {self.__class__.__name__} со следующими зависимостями: {creator=}""")
+    @debug_message_for_init()
+    def __init__(self, creator: Callable[..., Creator], materials_finder: Callable[..., Finder]):
+        self._creator = creator()
+        self._finder = materials_finder()
 
-    def by_class(self, any_class: Union[str, int]) -> list:
-        self.debug(f"""Создаем список доступных материалов по классу {any_class}""")
+    @output_debug_message("Создание списка доступных материалов по классу {}")
+    def by_class(self, any_class: InMaterialClass) -> list:
         if isinstance(any_class, int):
-            return [material for material in self._creator().create_all if material.class_ == any_class]
-        return [material for material in self._creator().create_all if material.class_ == CLASSES_MATERIALS[any_class]]
+            any_class = CLASSES_MATERIALS[any_class]
+        return [self._creator.create(record['brand']) for record in self._finder.all
+                if record['class_of_material'] == any_class]
 
+    @output_debug_message("Создание списка доступных материалов по подклассу {}")
     def by_subclass(self, any_subclass: str) -> list:
-        self.debug(f"""Создаем список доступных материалов по подклассу {any_subclass}""")
-        return [material for material in self._creator().create_all if material.subclass == any_subclass]
+        return [self._creator.create(record['brand']) for record in self._finder.all
+                if record['subclass_of_material'] == any_subclass]
 
     @property
+    @output_debug_message("Создание списка всех доступных материалов")
     def all(self) -> list:
-        self.debug(f"""Создаем список всех доступных материалов""")
-        materials = self._creator()._materials.all
-        return [self._creator().create(material['brand']) for material in materials]
+        return [self._creator.create(record['brand']) for record in self._finder.all]
+
