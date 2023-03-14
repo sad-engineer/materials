@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------------------------------------------------
 import pandas as pd
+from typing import Callable
 
 from materials.obj.finders import Finder
 from materials.scr.gen_fun import get_table_tensile_strength
@@ -12,9 +13,9 @@ from service import ReceivedEmptyDataFrame
 
 class ChemicalCompositionHandler:
     def __init__(self,
-                 chemical_composition_finder: Finder,
+                 chemical_composition_finder: Callable[..., Finder],
                  ):
-        self._chemical_composition = chemical_composition_finder
+        self._chemical_composition = chemical_composition_finder()
 
     def by_brand(self, any_brand: str) -> dict:
         chem_comp = self._chemical_composition.by_brand(any_brand)[0]
@@ -23,9 +24,10 @@ class ChemicalCompositionHandler:
 
 class HardnessHandler:
     def __init__(self,
-                 hardness_finder: Finder,
+                 hardness_finder: Callable[..., Finder],
                  ):
-        self._hardness_finder = hardness_finder
+        self._hardness_finder = hardness_finder()
+
         self.hardness_table = None
 
     def by_brand(self, any_brand: str) -> None:
@@ -46,9 +48,10 @@ class HardnessHandler:
 
 class TensileStrengthHandler:
     def __init__(self,
-                 mechanical_properties_finder: Finder,
+                 mechanical_properties_finder: Callable[..., Finder],
                  ):
-        self._mechanical_properties = mechanical_properties_finder
+        self._mechanical_properties = mechanical_properties_finder()
+
         self.tensile_strength_table = None
 
     def by_brand(self, any_brand: str) -> pd.DataFrame:
