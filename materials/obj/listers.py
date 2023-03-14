@@ -46,4 +46,3 @@ class Lister:
     @output_debug_message("Создание списка всех доступных материалов")
     def all(self) -> list:
         return [self._creator.create(record['brand']) for record in self._finder.all]
-

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------------------------------------------------
-from typing import Union, Optional, ClassVar
-from pydantic import BaseModel, validator
+from typing import Optional, ClassVar
+from pydantic import BaseModel
 
 from materials.obj.constants import CLASSES_MATERIALS, HEAT_TREATMENT, WORKPIECE
 
@@ -41,20 +41,3 @@ class InHeatTreatment(ValueFromDict):
 
 class InTypeWorkpiece(ValueFromDict):
     AVAILABLE_VALUES = WORKPIECE
-
-
-class Material(BaseModel):
-    class_: Optional[InMaterialClass] = None
-
-    class Config:
-        validate_assignment = True
-        extra = "allow"
-
-
-
-if __name__ == "__main__":
-
-    cutter = Material(class_='Сталь инструментальная')
-    cutter.class_ = 13
-    print(type(cutter.class_))
-

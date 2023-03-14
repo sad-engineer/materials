@@ -152,5 +152,3 @@ class Container(containers.DeclarativeContainer):
     workpiece_material = providers.Factory(
         WorkpieceMaterial
     )
-
-

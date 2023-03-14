@@ -34,8 +34,8 @@ def main(brand: str):
 
 
 if __name__ == '__main__':
-    workpiece_creator = Container().workpiece_material_creator()
-    create = workpiece_creator.create
-    create("20")
+    creator = Container().workpiece_material_creator()
+    mat = creator.create(any_brand="20")
+    print(mat)
 
 

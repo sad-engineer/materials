@@ -118,7 +118,7 @@ class MaterialCreator(Creator):
         try:
             self._hardness.by_brand(any_brand)
         except ReceivedEmptyDataFrame:
-            # Таблицы твердости в БД существуют не для всех материалов
+            # Таблицы твердости в БД существуют не для всех материалов.
             # Если таблица твердости не найдена, берем твердость для материала по умолчанию.
             default_brand = DEFAULT_NAMES[raw_date['index_of_material_class']]
             self._hardness.by_brand(default_brand)
@@ -129,7 +129,7 @@ class MaterialCreator(Creator):
         try:
             self._tensile_strength.by_brand(any_brand)
         except ReceivedEmptyDataFrame:
-            # Таблицы пределов прочности в БД существуют не для всех материалов
+            # Таблицы пределов прочности в БД существуют не для всех материалов.
             # Если таблица пределов прочности не найдена, берем предел прочности для материала по умолчанию.
             default_brand = DEFAULT_NAMES[raw_date['index_of_material_class']]
             self._tensile_strength.by_brand(default_brand)
@@ -184,4 +184,3 @@ class WorkpieceMaterialCreator(MaterialCreator):
             return WorkpieceMaterial.parse_obj(self.data)
         except Exception as error:
             return ErrorWithData(err=error, name=Material.__name__, params=self.data)
-
