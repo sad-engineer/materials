@@ -108,7 +108,7 @@ class MaterialCreator(Creator):
         )
 
     def _get_data(self, any_brand: str):
-        raw_date = self._materials.by_brand(any_brand)[0]
+        raw_date = self._materials.by_brand(brand=any_brand)[0]
         self.data['brand'] = raw_date['brand']
         self.data['class_'] = raw_date['class_of_material']
         if self.data['class_'] == "Чугун":
@@ -141,6 +141,7 @@ class MaterialCreator(Creator):
     @output_debug_message()
     @output_error_message()
     def create(self, any_brand: str):
+        self._verbose = True
         self._get_data(any_brand)
         try:
             return Material.parse_obj(self.data)
@@ -176,6 +177,7 @@ class WorkpieceMaterialCreator(MaterialCreator):
                heat_treatment: Optional[Union[int, str]] = DEFAULT_SETTINGS["type_of_heat_treatment"],
                workpiece: Optional[Union[int, str]] = DEFAULT_SETTINGS["workpiece"],
                hrc: Optional[int] = DEFAULT_SETTINGS["hrc"]):
+        self._verbose = True
         self._get_data(any_brand)
         self.data['heat_treatment'] = heat_treatment
         self.data['workpiece'] = workpiece

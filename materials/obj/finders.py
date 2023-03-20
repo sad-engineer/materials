@@ -14,7 +14,7 @@ def output_debug_message_with_kwargs_and_length(message: str):
         def wrapper(self, *args, **kwargs):
             result = func(self, *args, **kwargs)
             self.debug(message) if message.find("{") == -1 else self.debug(
-                message.format('; '.join([f'{k}= {v}' for k, v in kwargs.items()]), len(result)))
+                message.format(self.__class__.__name__, '; '.join([f'{k}= {v}' for k, v in kwargs.items()]), len(result)))
             return result
         return wrapper
     return decorator
@@ -26,7 +26,7 @@ def output_debug_message_with_with_length(message: str):
         def wrapper(self, *args, **kwargs):
             result = func(self, *args, **kwargs)
             self.debug(message) if message.find("{") == -1 else self.debug(
-                message.format(len(result)))
+                message.format(self.__class__.__name__, len(result)))
             return result
         return wrapper
     return decorator
@@ -40,7 +40,7 @@ class Finder:
     def __init__(self, record_requester: Callable[..., RecordRequester]):
         self._requester = record_requester()
 
-    @output_debug_message_with_kwargs_and_length("По ключам {0}  найдено записей: {1}")
+    @output_debug_message_with_kwargs_and_length("{0} по ключу {1} нашел записей: {2}")
     def by_brand(self, brand: str) -> Any:
         """ Возвращает найденные записи по наименованию материала. Формат возвращаемых данных определяет self._requester
 
@@ -51,7 +51,7 @@ class Finder:
         return records if records else None
 
     @property
-    @output_debug_message_with_with_length("Инициирован поиск всех записей таблицы. Найдено записей: {}")
+    @output_debug_message_with_with_length("{0} ищет все записи таблицы. Найдено записей: {1}")
     def all(self) -> Any:
         """ Возвращает все записи. Формат возвращаемых данных определяет self._requester."""
         for index, record in self._requester.get_all_records.items():

@@ -32,6 +32,7 @@ class Lister:
 
     @output_debug_message("Создание списка доступных материалов по классу {}")
     def by_class(self, any_class: InMaterialClass) -> list:
+        self._finder._verbose = False
         if isinstance(any_class, int):
             any_class = CLASSES_MATERIALS[any_class]
         return [self._creator.create(record['brand']) for record in self._finder.all
@@ -39,10 +40,12 @@ class Lister:
 
     @output_debug_message("Создание списка доступных материалов по подклассу {}")
     def by_subclass(self, any_subclass: str) -> list:
+        self._finder._verbose = False
         return [self._creator.create(record['brand']) for record in self._finder.all
                 if record['subclass_of_material'] == any_subclass]
 
     @property
     @output_debug_message("Создание списка всех доступных материалов")
     def all(self) -> list:
+        self._finder._verbose = False
         return [self._creator.create(record['brand']) for record in self._finder.all]
