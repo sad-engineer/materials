@@ -18,6 +18,7 @@ from materials.obj.entities import WorkpieceMaterial
 from materials.obj.constants import DEFAULT_SETTINGS_FOR_WORKPIECE_MATERIAL as DEFAULT_SETTINGS
 from materials.obj.constants import DEFAULT_NAMES_FOR_MATERIALS as DEFAULT_NAMES
 from materials.obj.constants import CLASSES_MATERIALS
+from materials.obj.constants import DEFAULT_BRAND
 from materials.obj.entities import ErrorWithData
 
 
@@ -87,6 +88,11 @@ class Creator(ABC):
     def create(self, brand: str):
         raise NotImplementedError
 
+    @property
+    @abstractmethod
+    def default(self):
+        raise NotImplementedError
+
 
 class MaterialCreator(Creator):
     """ Создает класс материала с характеристиками"""
@@ -145,6 +151,10 @@ class MaterialCreator(Creator):
         except Exception as error:
             return ErrorWithData(err=error, name=Material.__name__, params=self.data)
 
+    @property
+    def default(self):
+        return self.create(DEFAULT_BRAND)
+
 
 class WorkpieceMaterialCreator(MaterialCreator):
     """ Создает класс заготовки с характеристиками"""
@@ -183,3 +193,7 @@ class WorkpieceMaterialCreator(MaterialCreator):
             return WorkpieceMaterial.parse_obj(self.data)
         except Exception as error:
             return ErrorWithData(err=error, name=Material.__name__, params=self.data)
+
+    @property
+    def default(self):
+        return self.create(**DEFAULT_SETTINGS)
