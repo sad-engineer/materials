@@ -10,9 +10,9 @@ from service import logged
 from service import output_debug_message_for_init_method as debug_message_for_init
 
 from materials.obj.finders import Finder
-from materials.obj.handlers import ChemicalCompositionHandler
-from materials.obj.handlers import HardnessHandler
-from materials.obj.handlers import TensileStrengthHandler
+from materials.obj.handlers import MaterialChemicalCompositionHandler
+from materials.obj.handlers import MaterialHardnessHandler
+from materials.obj.handlers import MaterialTensileStrengthHandler
 from materials.obj.entities import Material
 from materials.obj.entities import WorkpieceMaterial
 from materials.obj.constants import DEFAULT_SETTINGS_FOR_WORKPIECE_MATERIAL as DEFAULT_SETTINGS
@@ -66,10 +66,10 @@ class Creator(ABC):
     @abstractmethod
     @debug_message_for_init()
     def __init__(self,
-                 chemical_composition_handler: Callable[..., ChemicalCompositionHandler],
-                 hardness_handler: Callable[..., HardnessHandler],
+                 chemical_composition_handler: Callable[..., MaterialChemicalCompositionHandler],
+                 hardness_handler: Callable[..., MaterialHardnessHandler],
                  materials_finder: Callable[..., Finder],
-                 tensile_strength_handler: Callable[..., TensileStrengthHandler],
+                 tensile_strength_handler: Callable[..., MaterialTensileStrengthHandler],
                  ):
         self._chemical_composition = chemical_composition_handler()
         self._hardness = hardness_handler()
@@ -91,10 +91,10 @@ class Creator(ABC):
 class MaterialCreator(Creator):
     """ Создает класс материала с характеристиками"""
     def __init__(self,
-                 chemical_composition_handler: Callable[..., ChemicalCompositionHandler],
-                 hardness_handler: Callable[..., HardnessHandler],
+                 chemical_composition_handler: Callable[..., MaterialChemicalCompositionHandler],
+                 hardness_handler: Callable[..., MaterialHardnessHandler],
                  materials_finder: Callable[..., Finder],
-                 tensile_strength_handler: Callable[..., TensileStrengthHandler],
+                 tensile_strength_handler: Callable[..., MaterialTensileStrengthHandler],
                  ):
         Creator.__init__(
             self,
@@ -151,10 +151,10 @@ class WorkpieceMaterialCreator(MaterialCreator):
     DEFAULT_SETTINGS: ClassVar[dict] = DEFAULT_SETTINGS
 
     def __init__(self,
-                 chemical_composition_handler: Callable[..., ChemicalCompositionHandler],
-                 hardness_handler: Callable[..., HardnessHandler],
+                 chemical_composition_handler: Callable[..., MaterialChemicalCompositionHandler],
+                 hardness_handler: Callable[..., MaterialHardnessHandler],
                  materials_finder: Callable[..., Finder],
-                 tensile_strength_handler: Callable[..., TensileStrengthHandler],
+                 tensile_strength_handler: Callable[..., MaterialTensileStrengthHandler],
                  ):
         Creator.__init__(
             self,
