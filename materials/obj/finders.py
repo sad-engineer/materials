@@ -35,7 +35,6 @@ def output_debug_message_with_with_length(message: str):
 @logged
 class Finder:
     """ Ищет записи в БД по конкретным параметрам."""
-
     @debug_message_for_init()
     def __init__(self, record_requester: Callable[..., RecordRequester]):
         self._requester = record_requester()

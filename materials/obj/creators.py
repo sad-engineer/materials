@@ -43,22 +43,19 @@ def output_error_message():
                 return result
             if isinstance(result.err, ValueError):
                 self.error(f"Переданные данные не соответствуют ожидаемой схеме модели {result.name}."
-                           f"Данные, полученные из БД: {result.raw_data}."
                            f"Данные, загружаемые в модель: {result.params}.")
             elif isinstance(result.err, TypeError):
                 self.error(f"Данные, загружаемые в модель должны быть словарем. "
                            f"Полученный тип данных: {type(result.params)}.")
             elif isinstance(result.err, ValidationError):
                 self.error(f"Входные данные содержат неверные значения для полей модели {result.name}."
-                           f"Данные, полученные из БД: {result.raw_data}."
                            f"Данные, загружаемые в модель: {result.params}.")
             elif isinstance(result.err, AttributeError):
                 self.error(f"Входные данные содержат неверные значения для полей модели {result.name}."
-                           f"Данные, полученные из БД: {result.raw_data}."
                            f"Данные, загружаемые в модель: {result.params}.")
             else:
                 self.error(f"Ошибка создания экземпляра класса {result.name} с параметрами {result.params}."
-                           f"Данные, полученные из БД: {result.raw_data}.")
+                           f"Данные, загружаемые в модель: {result.params}.")
         return wrapper
     return decorator
 
