@@ -11,7 +11,7 @@ DEFAULT_SETTINGS = {
 # Настройки для начальных данных
 DEFAULT_SETTINGS_FOR_WORKPIECE_MATERIAL = {
     "brand": "20",
-    "type_of_heat_treatment": None,
+    "heat_treatment": None,
     "hrc": None,
     "workpiece": 0,
 }

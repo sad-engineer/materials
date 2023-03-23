@@ -80,11 +80,11 @@ class Creator(ABC):
         self.data = {}
 
     @abstractmethod
-    def _get_data(self, any_brand: str):
+    def _get_data(self, brand: str):
         raise NotImplementedError
 
     @abstractmethod
-    def create(self, any_brand: str):
+    def create(self, brand: str):
         raise NotImplementedError
 
 
@@ -104,42 +104,42 @@ class MaterialCreator(Creator):
             tensile_strength_handler=tensile_strength_handler
         )
 
-    def _get_data(self, any_brand: str):
-        raw_date = self._materials.by_brand(brand=any_brand)[0]
+    def _get_data(self, brand: str):
+        raw_date = self._materials.by_brand(brand=brand)[0]
         self.data['brand'] = raw_date['brand']
         self.data['class_'] = raw_date['class_of_material']
         if self.data['class_'] == "Чугун":
             self.data['class_'] = CLASSES_MATERIALS[raw_date['index_of_material_class']]
         self.data['subclass'] = raw_date['subclass_of_material']
-        self.data['chemical_composition'] = self._chemical_composition.by_brand(any_brand)
+        self.data['chemical_composition'] = self._chemical_composition.by_brand(brand)
         try:
-            self._hardness.by_brand(any_brand)
+            self._hardness.by_brand(brand)
         except ReceivedEmptyDataFrame:
             # Таблицы твердости в БД существуют не для всех материалов.
             # Если таблица твердости не найдена, берем твердость для материала по умолчанию.
             default_brand = DEFAULT_NAMES[raw_date['index_of_material_class']]
             self._hardness.by_brand(default_brand)
             # TODO: Придумать декоратор для info
-            self.info(f"Твердость материала {any_brand} не найдена. Принята для материала {default_brand}")
+            self.info(f"Твердость материала {brand} не найдена. Принята для материала {default_brand}")
         self.data['hardness_tabl_mpa'] = self._hardness.table
         self.data['hardness_mpa'] = self._hardness.value
         try:
-            self._tensile_strength.by_brand(any_brand)
+            self._tensile_strength.by_brand(brand)
         except ReceivedEmptyDataFrame:
             # Таблицы пределов прочности в БД существуют не для всех материалов.
             # Если таблица пределов прочности не найдена, берем предел прочности для материала по умолчанию.
             default_brand = DEFAULT_NAMES[raw_date['index_of_material_class']]
             self._tensile_strength.by_brand(default_brand)
             # TODO: Придумать декоратор для info
-            self.info(f"Предел прочности материала {any_brand} не найден. Принят для материала {default_brand}")
+            self.info(f"Предел прочности материала {brand} не найден. Принят для материала {default_brand}")
         self.data['tensile_strength_tabl_mpa'] = self._tensile_strength.table
         self.data['tensile_strength_mpa'] = self._tensile_strength.value
 
     @output_debug_message()
     @output_error_message()
-    def create(self, any_brand: str):
+    def create(self, brand: str):
         self._verbose = True
-        self._get_data(any_brand)
+        self._get_data(brand)
         try:
             return Material.parse_obj(self.data)
         except Exception as error:
@@ -164,18 +164,18 @@ class WorkpieceMaterialCreator(MaterialCreator):
             tensile_strength_handler=tensile_strength_handler
         )
 
-    def _get_data(self, any_brand: str):
-        MaterialCreator._get_data(self, any_brand)
+    def _get_data(self, brand: str):
+        MaterialCreator._get_data(self, brand)
 
     @output_debug_message()
     @output_error_message()
     def create(self,
-               any_brand: str,
-               heat_treatment: Optional[Union[int, str]] = DEFAULT_SETTINGS["type_of_heat_treatment"],
+               brand: str,
+               heat_treatment: Optional[Union[int, str]] = DEFAULT_SETTINGS["heat_treatment"],
                workpiece: Optional[Union[int, str]] = DEFAULT_SETTINGS["workpiece"],
                hrc: Optional[int] = DEFAULT_SETTINGS["hrc"]):
         self._verbose = True
-        self._get_data(any_brand)
+        self._get_data(brand)
         self.data['heat_treatment'] = heat_treatment
         self.data['workpiece'] = workpiece
         self.data['hrc'] = hrc
