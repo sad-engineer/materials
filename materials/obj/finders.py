@@ -64,21 +64,21 @@ class Finder:
 
 # =====================================================================================================================
 # Этот класс создан для читаемости debug сообщений
-class CharacteristicsFinder(Finder):
+class MaterialCharacteristicsFinder(Finder):
     """ Ищет записи в БД по конкретным параметрам в таблице характеристик материалов"""
     def __init__(self, record_requester: Callable[..., RecordRequester]):
         super().__init__(record_requester=record_requester)
 
 
 # Этот класс создан для читаемости debug сообщений
-class ChemicalCompositionFinder(Finder):
+class MaterialChemicalCompositionFinder(Finder):
     """ Ищет записи в БД по конкретным параметрам в таблице химсостава"""
     def __init__(self, record_requester: Callable[..., RecordRequester]):
         super().__init__(record_requester=record_requester)
 
 
 # Этот класс создан для читаемости debug сообщений
-class HardnessFinder(Finder):
+class MaterialHardnessFinder(Finder):
     """ Ищет записи в БД по конкретным параметрам в таблице твердости"""
     def __init__(self, record_requester: Callable[..., RecordRequester]):
         super().__init__(record_requester=record_requester)
@@ -92,14 +92,14 @@ class MaterialsFinder(Finder):
 
 
 # Этот класс создан для читаемости debug сообщений
-class MechanicalPropertiesFinder(Finder):
+class MaterialMechanicalPropertiesFinder(Finder):
     """ Ищет записи в БД по конкретным параметрам в таблице механических свойств"""
     def __init__(self, record_requester: Callable[..., RecordRequester]):
         super().__init__(record_requester=record_requester)
 
 
 # Этот класс создан для читаемости debug сообщений
-class TechnologicalPropertiesFinder(Finder):
+class MaterialTechnologicalPropertiesFinder(Finder):
     """ Ищет записи в БД по конкретным параметрам в таблице технических свойств"""
 
     def __init__(self, record_requester: Callable[..., RecordRequester]):

@@ -4,18 +4,20 @@
 from dependency_injector import containers, providers
 from service import Requester as RequesterContainer
 
-from materials.obj.finders import CharacteristicsFinder, ChemicalCompositionFinder, HardnessFinder, \
-    MaterialsFinder, MechanicalPropertiesFinder, TechnologicalPropertiesFinder
-from materials.obj.handlers import ChemicalCompositionHandler, HardnessHandler, TensileStrengthHandler
+from materials.obj.finders import MaterialCharacteristicsFinder, MaterialChemicalCompositionFinder,\
+    MaterialHardnessFinder, MaterialsFinder, MaterialMechanicalPropertiesFinder, \
+    MaterialTechnologicalPropertiesFinder
+from materials.obj.handlers import MaterialChemicalCompositionHandler, MaterialHardnessHandler, \
+    MaterialTensileStrengthHandler
 from materials.obj.creators import MaterialCreator, WorkpieceMaterialCreator
 from materials.obj.entities import Material, WorkpieceMaterial
-from materials.obj.listers import Lister
+from materials.obj.listers import MaterialLister
 from materials.obj.constants import DEFAULT_SETTINGS
 DB_PATH = DEFAULT_SETTINGS['path']
 DB_type = DEFAULT_SETTINGS['db_type']
 
 
-class Container(containers.DeclarativeContainer):
+class MaterialContainer(containers.DeclarativeContainer):
     default_settings = providers.Object({
         'for_characteristics':
             {'path': DB_PATH, 'requester_type': DB_type, 'reader_type': 'dict',
@@ -42,7 +44,7 @@ class Container(containers.DeclarativeContainer):
     )
 
     characteristics_finder = providers.Factory(
-        CharacteristicsFinder,
+        MaterialCharacteristicsFinder,
         record_requester=characteristics_container.requester.provider,
     )
 
@@ -53,12 +55,12 @@ class Container(containers.DeclarativeContainer):
     )
 
     chemical_composition_finder = providers.Factory(
-        ChemicalCompositionFinder,
+        MaterialChemicalCompositionFinder,
         record_requester=chemical_composition_container.requester.provider,
     )
 
     chemical_composition_handler = providers.Factory(
-        ChemicalCompositionHandler,
+        MaterialChemicalCompositionHandler,
         chemical_composition_finder=chemical_composition_finder.provider,
     )
 
@@ -69,12 +71,12 @@ class Container(containers.DeclarativeContainer):
     )
 
     hardness_finder = providers.Factory(
-        HardnessFinder,
+        MaterialHardnessFinder,
         record_requester=hardness_container.requester.provider,
     )
 
     hardness_handler = providers.Factory(
-        HardnessHandler,
+        MaterialHardnessHandler,
         hardness_finder=hardness_finder.provider,
     )
 
@@ -96,12 +98,12 @@ class Container(containers.DeclarativeContainer):
     )
 
     mechanical_properties_finder = providers.Factory(
-        MechanicalPropertiesFinder,
+        MaterialMechanicalPropertiesFinder,
         record_requester=mechanical_properties_container.requester.provider,
     )
 
     tensile_strength_handler = providers.Factory(
-        TensileStrengthHandler,
+        MaterialTensileStrengthHandler,
         mechanical_properties_finder=mechanical_properties_finder.provider,
     )
 
@@ -112,7 +114,7 @@ class Container(containers.DeclarativeContainer):
     )
 
     technological_properties_finder = providers.Factory(
-        TechnologicalPropertiesFinder,
+        MaterialTechnologicalPropertiesFinder,
         record_requester=technological_properties_container.requester.provider,
     )
 
@@ -134,13 +136,13 @@ class Container(containers.DeclarativeContainer):
     )
 
     material_lister = providers.Factory(
-        Lister,
+        MaterialLister,
         creator=material_creator.provider,
         materials_finder=materials_finder.provider
     )
 
     workpiece_material_lister = providers.Factory(
-        Lister,
+        MaterialLister,
         creator=workpiece_material_creator.provider,
         materials_finder=materials_finder.provider
     )

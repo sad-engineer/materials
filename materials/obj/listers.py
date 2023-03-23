@@ -24,7 +24,7 @@ def output_debug_message(message: str):
 
 
 @logged
-class Lister:
+class MaterialLister:
     @debug_message_for_init()
     def __init__(self, creator: Callable[..., Creator], materials_finder: Callable[..., Finder]):
         self._creator = creator()

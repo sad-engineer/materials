@@ -15,7 +15,7 @@ from materials.scr.gen_fun import get_average
 
 
 @logged
-class ChemicalCompositionHandler:
+class MaterialChemicalCompositionHandler:
     """Фильтрует таблицу химического состава из запроса к БД.
 
     Parameters:
@@ -37,7 +37,7 @@ class ChemicalCompositionHandler:
 
 
 @logged
-class HardnessHandler:
+class MaterialHardnessHandler:
     """Восстанавливает таблицу твердости из запроса к БД.
 
     Parameters:
@@ -76,7 +76,7 @@ class HardnessHandler:
 
 
 @logged
-class TensileStrengthHandler:
+class MaterialTensileStrengthHandler:
     """Восстанавливает таблицу предела прочности из запроса к БД.
 
     Parameters:

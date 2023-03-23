@@ -10,13 +10,13 @@ from .obj.constants import HEAT_TREATMENT
 from .obj.constants import WORKPIECE
 from .obj.constants import DECODING
 # Классы пакета
-from materials.obj.containers import Container
-Material = Container().material
-WorkpieceMaterial = Container().workpiece_material
-MaterialCreator = Container().material_creator
-WorkpieceMaterialCreator = Container().workpiece_material_creator
-MaterialLister = Container().material_lister
-WorkpieceMaterialLister = Container().workpiece_material_lister
+from materials.obj.containers import MaterialContainer
+Material = MaterialContainer().material
+WorkpieceMaterial = MaterialContainer().workpiece_material
+MaterialCreator = MaterialContainer().material_creator
+WorkpieceMaterialCreator = MaterialContainer().workpiece_material_creator
+MaterialLister = MaterialContainer().material_lister
+WorkpieceMaterialLister = MaterialContainer().workpiece_material_lister
 
 
 __all__ = [
@@ -30,7 +30,7 @@ __all__ = [
     "WORKPIECE",
     "DECODING",
     # Классы пакета
-    "Container",
+    "MaterialContainer",
     "Material",
     "WorkpieceMaterial",
     "MaterialCreator",
