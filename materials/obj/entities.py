@@ -18,8 +18,7 @@ class Material(BaseModel):
 
     Parameters:
     brand : (str, optional) : Наименование материала (будет использовано для поиска по базе данных).
-    type_of_mat : (int, optional) : Индекс типа материала.
-    class_ : (str, optional) : Класс материала.
+    class_ : (InMaterialClass, optional) : Класс материала.
     subclass : (str, optional) : Подкласс материала.
     chemical_composition : (dict, optional) : Таблица химического состава материала.
     hardness_tabl_mpa : (pd.DataFrame, optional) : Таблица твердости (в МПа) материала в различных состояниях поставки.
