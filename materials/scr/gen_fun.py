@@ -10,9 +10,9 @@ from typing import Optional, Union
 # from materials.obj.constants import INDEXES_OF_WORKPIECE as INDEXES_WP
 # from materials.obj.constants import NAMES_OF_HEAT_TREATMENT as NAMES_HT
 # from materials.obj.constants import INDEXES_OF_HEAT_TREATMENT as INDEXES_HT
-from service import ReceivedEmptyDataFrame
-# from service import ReceivedEmptyDataFrame
-from service import InvalidValue
+from service_for_my_projects import ReceivedEmptyDataFrame
+# from service_for_my_projects import ReceivedEmptyDataFrame
+from service_for_my_projects import InvalidValue
 
 
 def get_average(data: pd.Series, order: int = 6) -> float:

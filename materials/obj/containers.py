@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------------------------------------------------
 from dependency_injector import containers, providers
-from service import Requester as RequesterContainer
+from service_for_my_projects import Requester as RequesterContainer
 
 from materials.obj.finders import MaterialCharacteristicsFinder, MaterialChemicalCompositionFinder,\
     MaterialHardnessFinder, MaterialsFinder, MaterialMechanicalPropertiesFinder, \

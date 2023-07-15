@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------------------------------------------------
 from materials.obj.containers import MaterialContainer
-from service import timeit, timeit_property
+from service_for_my_projects import timeit, timeit_property
 
 from materials.logger_settings import config
 import logging.config

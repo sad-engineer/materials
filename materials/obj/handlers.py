@@ -4,9 +4,9 @@
 import pandas as pd
 from typing import Callable
 
-from service import ReceivedEmptyDataFrame
-from service import logged
-from service import output_debug_message_for_init_method as debug_message_for_init
+from service_for_my_projects import ReceivedEmptyDataFrame
+from service_for_my_projects import logged
+from service_for_my_projects import output_debug_message_for_init_method as debug_message_for_init
 
 from materials.obj.finders import Finder
 from materials.scr.gen_fun import get_table_tensile_strength

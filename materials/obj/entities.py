@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 from typing import Optional, Any
 import pandas as pd
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from collections import namedtuple
 
 from materials.obj.constants import CLASSES_MATERIALS, HEAT_TREATMENT, WORKPIECE
@@ -39,29 +39,30 @@ class Material(BaseModel):
     class Config:
         validate_assignment = True
         extra = "allow"
+        arbitrary_types_allowed = True
 
-    @validator('hardness_tabl_mpa')
+    @field_validator('hardness_tabl_mpa')
     def validate_hardness_tabl_mpa(cls, value):
         if not isinstance(value, type(None)):
             if not isinstance(value, pd.DataFrame):
                 raise ValueError('Переменная должна содержать таблицу pandas DataFrame')
         return value
 
-    @validator('hardness_mpa')
+    @field_validator('hardness_mpa')
     def validate_hardness_mpa(cls, value):
         if not isinstance(value, type(None)):
             if value < 0:
                 raise ValueError(f"Ожидается положительное число, получено: {value}")
         return value
 
-    @validator('tensile_strength_tabl_mpa')
+    @field_validator('tensile_strength_tabl_mpa')
     def validate_tensile_strength_tabl_mpa(cls, value):
         if not isinstance(value, type(None)):
             if not isinstance(value, pd.DataFrame):
                 raise ValueError('Переменная должна содержать таблицу pandas DataFrame')
         return value
 
-    @validator('tensile_strength_mpa')
+    @field_validator('tensile_strength_mpa')
     def validate_tensile_strength_mpa(cls, value):
         if not isinstance(value, type(None)):
             if value < 0:
@@ -95,7 +96,7 @@ class WorkpieceMaterial(Material):
     workpiece: Optional[InTypeWorkpiece] = None
     hrc: Optional[float] = None
 
-    @validator('hrc')
+    @field_validator('hrc')
     def validate_hrc(cls, value):
         if not isinstance(value, type(None)):
             if value < 0:
