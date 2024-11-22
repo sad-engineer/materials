@@ -9,9 +9,8 @@ packages = [{include = "materials"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pandas = "^2.0.3"
-pydantic = "^2.0.3"
-service-for-my-projects = {git = "https://github.com/sad-engineer/service_for_my_projects.git"}
+sqlalchemy = "^2.0.36"
+pandas = "^2.2.3"
 
 [build-system]
 requires = ["poetry-core"]

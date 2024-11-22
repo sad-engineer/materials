@@ -1,40 +1,48 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Константы пакета
-from .obj.constants import DEFAULT_NAMES_FOR_MATERIALS
-from .obj.constants import DEFAULT_SETTINGS_FOR_WORKPIECE_MATERIAL
-from .obj.constants import DEFAULT_BRAND
-from .obj.constants import DEFAULT_NAMES_FOR_MATERIALS
-from .obj.constants import CLASSES_MATERIALS
-from .obj.constants import HEAT_TREATMENT
-from .obj.constants import WORKPIECE
-from .obj.constants import DECODING
-# Классы пакета
-from materials.obj.containers import MaterialContainer
-Material = MaterialContainer().material
-WorkpieceMaterial = MaterialContainer().workpiece_material
-MaterialCreator = MaterialContainer().material_creator
-WorkpieceMaterialCreator = MaterialContainer().workpiece_material_creator
-MaterialLister = MaterialContainer().material_lister
-WorkpieceMaterialLister = MaterialContainer().workpiece_material_lister
+# ---------------------------------------------------------------------------------------------------------------------
+"""
+Этот модуль инициализации позволяет импортировать все компоненты пакета `materials` из одного места. Он включает в себя
+подключение к базе данных, все модели данных и функции для выполнения CRUD операций.
 
+Импортируя `materials`, вы получаете доступ ко всем компонентам, необходимым для работы с материалами, включая базы
+данных и модели.
 
-__all__ = [
-    # Константы пакета
-    "DEFAULT_NAMES_FOR_MATERIALS",
-    "DEFAULT_SETTINGS_FOR_WORKPIECE_MATERIAL",
-    "DEFAULT_BRAND",
-    "DEFAULT_NAMES_FOR_MATERIALS",
-    "CLASSES_MATERIALS",
-    "HEAT_TREATMENT",
-    "WORKPIECE",
-    "DECODING",
-    # Классы пакета
-    "MaterialContainer",
-    "Material",
-    "WorkpieceMaterial",
-    "MaterialCreator",
-    "WorkpieceMaterialCreator",
-    "MaterialLister",
-    "WorkpieceMaterialLister",
-    ]
+Основные компоненты:
+- Модели: Base, Material, MaterialIndices, Hardness, ChemicalComposition, TechnologicalProperties,
+MechanicalProperties, CharacteristicsOfMaterial.
+- Функции CRUD: get_material_by_brand, get_hardness_by_brand, get_chemical_composition_by_brand,
+get_technological_properties_by_brand, get_mechanical_properties_by_brand,
+get_characteristics_by_brand, query_data_example.
+- Подключение к базе данных: SessionLocal, engine.
+
+Пример использования:
+    from materials import SessionLocal, Material, get_material_by_brand
+
+    # Создание сессии
+    db = SessionLocal()
+    # Получение материала по бренду
+    material = get_material_by_brand("SteelX", db)
+    print(material)
+"""
+
+from .database import SessionLocal, engine
+from .models import (
+    Base,
+    Material,
+    MaterialIndices,
+    Hardness,
+    ChemicalComposition,
+    TechnologicalProperties,
+    MechanicalProperties,
+    CharacteristicsOfMaterial
+)
+from .crud import (
+    get_material_by_brand,
+    get_hardness_by_brand,
+    get_chemical_composition_by_brand,
+    get_technological_properties_by_brand,
+    get_mechanical_properties_by_brand,
+    get_characteristics_by_brand,
+    query_data_example
+)
