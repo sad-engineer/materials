@@ -1,166 +1,87 @@
-# `materials`
+# materials
 
-`materials` - модуль работы с базой данных материалов
----
----
-Поддерждиваемые константы:
+`materials` - это пакет Python для работы с базой данных материалов. Пакет предоставляет простой доступ к информации о материалах, включая их характеристики, химический состав, механические и технологические свойства. Основная цель пакета - упростить взаимодействие с базой данных материалов через функции, выполняющие CRUD-операции.
 
-    Список материалов по умолчанию (key - индекс класса материала):
-    materials.DEFAULT_NAMES_FOR_MATERIALS[any_index]
+## Установка
 
-    Описание доступных классов материалов:
-        доступ по индексу класса материала:
-            materials.NAMES_OF_CLASS_MATERIALS[any_index]
-        доступ по классу материала:
-            materials.INDEXES_OF_CLASS_MATERIALS[any_name]
+Для установки пакета `materials` используйте команду:
 
-    Описание типа термообработки:
-        доступ по индексу типа термообработки:
-            materials.NAMES_OF_HEAT_TREATMENT[any_index]
-        доступ по типу термообработки:
-            materials.INDEXES_OF_HEAT_TREATMENT[any_name]
+```sh
+pip install git+https://github.com/your-username/materials.git
+```
 
-    Описание типа поверхности заготовки:
-        доступ по индексу типа поверхности заготовки:
-            materials.NAMES_OF_WORKPIECE[any_index]
-        доступ по типу поверхности заготовки:
-            materials.INDEXES_OF_WORKPIECE[any_name]
+## Подготовка базы данных
 
-    Описание переменных классов:
-        доступ по строковому имени переменной:
-            materials.DECODING[any_name_value]
----
-Поддерждиваемые функции:
-	
-	Получение списка  доступных материалов по наименованию группы материала:
-		brands = materials.by_class(any_class)
-	
-	Получение списка доступных материалов по индексу группы материала:
-		brands = materials.by_index(any_index)
+База данных устанавливается вместе с пакетом, и настройка не требуется. Пакет поддерживает базу данных SQLite по умолчанию, но можно указать другой URL базы данных через переменную окружения DATABASE_URL.
 
-	Получение индекса, группы и подгруппы материала:
-		index, class_, subclass = materials.characteristics(any_brand)
+## Использование
 
-	Получение химического состава материала:
-		dict = materials.chem_struct(any_brand)
+Ниже приведен пример использования пакета materials для получения информации о материалах.
 
-	Получение твердости материала:
-		dataframe = materials.hardness(any_brand)
+```sh
+from materials import get_all_brands, get_brands_by_material_class_index
 
-	Получение предела прочности материала:
-		dataframe = materials.tensile_strength(any_brand)
----
-Поддерждиваемые классы:	
-    
-    Датакласс "MaterialData":
-        Хранит модель данных "Материал"
+# Получение всех брендов материалов
+all_brands = get_all_brands()
+print("Все бренды:", all_brands)
 
-        Создать класс:
-            material_data = materials.Material()
+# Получение брендов по индексу класса материала
+index = 4
+brands_by_index = get_brands_by_material_class_index(index)
+print(f"Бренды с index_of_material_class = {index}:", brands_by_index)
+```
 
-        Показать передаваемые параметры класса:
-            print(material_data)
-            print(material_data.__doc__)
-    _______________________________________________________________________________________________________
-    
-    Класс "Material" (наследует датакласс "MaterialData"):
-        Наполняет модель данных "Материал" конкретными значениями конкретного материалла.
-        Хранит методы работы с моделью данных, знает какими данными наполнять поля.
+## Запуск основного приложения
 
-        Создать класс:
-            material = materials.Material(brand: Optional[str] = any_brand)
+Файл main.py можно использовать для выполнения основных операций с базой данных.
 
-        Показать передаваемые параметры класса:
-            print(material)
-            print(material.__doc__)
-        
-        Задать настройки по умолчанию:
-            material.get_default_settings()
+```sh
+python main.py
+```
 
-        Задать новый материал:
-            material.get_material_parameters(brand = new_brand)
-        
-        Сбросить настройки класса на настройки по умолчанию:
-            material.get_default_settings()
-        
-        Получить экземпляр класса с настройками по умолчанию:
-            material = Material.default_material()
-    _______________________________________________________________________________________________________
-    
-    Класс "WorkpieceMaterial" (наследует класс "Material"):
-        Дополняет модель данных "Материал" новыми параметрами, необходимыми для "Заготовки".
+## Пример содержимого main.py
 
-        Создать класс:
-            wmaterial = materials.WorkpieceMaterial(brand: Optional[str], 
-                                                    heat_treatment: Optional[Union[str, int]],
-                                                    hrc: Optional[Union[float, int]], 
-                                                    workpiece: int)
+```sh
+import os
+from materials import get_all_brands, get_brands_by_material_class_index
 
-        Показать передаваемые параметры класса:
-            print(wmaterial)
-            print(wmaterial.__doc__)
-        
-        Задать настройки по умолчанию:
-            wmaterial.get_default_settings()
+# Отключение echo при запуске main.py
+os.environ["SQLALCHEMY_ECHO"] = "False"
 
-        Задать новый материал:
-            wmaterial.get_material_parameters(brand = new_brand)
+def main():
+    # Получение всех брендов
+    all_brands = get_all_brands()
+    print("Все бренды:", all_brands)
 
-        Задать тип термообработки:
-            wmaterial.update_heat_treatment(heat_treatment = new_heat_treatment)
+    # Получение брендов по index_of_material_class
+    index = 4
+    brands_by_index = get_brands_by_material_class_index(index)
+    print(f"Бренды с index_of_material_class = {index}:", brands_by_index)
 
-        Задать тверость обрабатываемого материала после термообработки (тврдость по Роквеллу):
-            wmaterial.HRC = new_HRC
+if __name__ == "__main__":
+    main()
+```
 
-        Задать новый тип поверхности заготовки:
-            wmaterial.update_workpiece(workpiece = new_workpiece)
-        
-        Сбросить настройки класса на настройки по умолчанию:
-            wmaterial.get_default_settings()
-        
-        Получить экземпляр класса с настройками по умолчанию:
-            wmaterial = Material.default_material()
-    _______________________________________________________________________________________________________
-    
-    Класс "Notifier" :
-        Абстрактный класс. Наследовать при создании классов вывода результатов.
-    _______________________________________________________________________________________________________
-    
-    Класс "FilePrinter" :
-        Выводит результат в файл. Наследует Notifier
-        
-        Вывести поля материала в файл:
-            по пути logs\\{time_prefix}_log.txt (time_prefix - метка времени создания отчета):
-                materials.FilePrinter().log(any_material, 
-                                            notifier=FilePrinter, 
-                                            message='### Параметры материала ###')
-            
-            по пользовательскому пути:
-                materials.FilePrinter().log(any_material, 
-                                            notifier=FilePrinter, 
-                                            message='### Параметры материала ###', 
-                                            path=any_path)
-    _______________________________________________________________________________________________________
-    
-    Класс "Logger" :
-        Передает в конкретный логгер (наследник Notifier) объект вывода. 
-        По умолчанию, выводит в консоль:
-            materials.Logger().log(any_material)
-            materials.Logger().log(any_material, message='### Параметры материала ###')
-        
-        Для прочих выводов отчета по обьекту, использовать кокой-нибудь наследник Notifier.
-        Например:
-            вывести поля материала в файл:
-                FilePrinter = materials.FilePrinter
-                materials.Logger().log( any_material, 
-                                        notifier=FilePrinter, 
-                                        message='### Параметры материала ###')
-            
-            вывести поля материала в файл по пользовательскому пути:
-                FilePrinter = materials.FilePrinter                
-                materials.Logger().log( any_material, 
-                                        notifier=FilePrinter, 
-                                        message='### Параметры материала ###', 
-                                        path=any_path)
-        
-        
+## Настройка параметра echo для SQLAlchemy
+
+Параметр echo управляет выводом SQL-запросов в консоль. Вы можете управлять этим параметром, используя переменную окружения SQLALCHEMY_ECHO.
+* При запуске main.py echo отключен (False).
+* При использовании функций из пакета materials echo можно включить, установив переменную окружения:
+
+```sh
+import os
+
+# Включение echo при работе с пакетом materials
+os.environ["SQLALCHEMY_ECHO"] = "True"
+from materials import get_all_brands
+
+all_brands = get_all_brands()
+print("Все бренды:", all_brands)
+```
+
+## Переменные окружения
+* DATABASE_URL: URL для подключения к базе данных. По умолчанию используется SQLite (sqlite:///materials.db).
+* SQLALCHEMY_ECHO: Устанавливает уровень вывода для SQLAlchemy (True или False). Используйте для включения/отключения вывода SQL-запросов.
+
+Лицензия
+* Подробности смотрите в файле LICENSE.

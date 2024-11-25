@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "materials"
-version = "0.1.51"
+version = "0.2.03"
 description = ""
 authors = ["Andrey Nikolaevich Korenyuk <korenyuk.a.n@mail.ru>"]
 license = "LICENSE.txt"
@@ -10,7 +10,6 @@ packages = [{include = "materials"}]
 [tool.poetry.dependencies]
 python = "^3.9"
 sqlalchemy = "^2.0.36"
-pandas = "^2.2.3"
 
 [build-system]
 requires = ["poetry-core"]
