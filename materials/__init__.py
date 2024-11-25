@@ -25,6 +25,7 @@ get_characteristics_by_brand, query_data_example.
     material = get_material_by_brand("SteelX", db)
     print(material)
 """
+import os
 
 from .database import SessionLocal, engine
 from .models import (
@@ -39,10 +40,28 @@ from .models import (
 )
 from .crud import (
     get_material_by_brand,
+    get_material_class_index_by_id,
     get_hardness_by_brand,
     get_chemical_composition_by_brand,
     get_technological_properties_by_brand,
     get_mechanical_properties_by_brand,
     get_characteristics_by_brand,
-    query_data_example
+    get_all_brands,
+    get_brands_by_material_class_index,
 )
+
+# Настройка логирования пакета
+os.environ["SQLALCHEMY_ECHO"] = "False"
+
+# Экспортируем все функции, чтобы они были доступны через `import materials`
+__all__ = [
+    "get_material_by_brand",
+    "get_material_class_index_by_id",
+    "get_hardness_by_brand",
+    "get_chemical_composition_by_brand",
+    "get_technological_properties_by_brand",
+    "get_mechanical_properties_by_brand",
+    "get_characteristics_by_brand",
+    "get_all_brands",
+    "get_brands_by_material_class_index",
+]

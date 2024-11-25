@@ -22,7 +22,7 @@
 """
 
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List
 from materials.models import Material, MaterialIndices, Hardness, ChemicalComposition, TechnologicalProperties, \
     MechanicalProperties, CharacteristicsOfMaterial
 from materials.database import SessionLocal
@@ -94,34 +94,16 @@ def get_characteristics_by_brand(brand: str, db: Session = SessionLocal()):
     return characteristics
 
 
-# Пример вызова функции для запроса данных
-def query_data_example(brand: str, db: Session = SessionLocal()):
-    try:
-        material = get_material_by_brand(brand, db)
-        if material:
-            print(f"Material: {material.brand}, Class: {material.class_of_material}")
+# Функция для получения списка всех брендов
+def get_all_brands(db: Session = SessionLocal()) -> List[str]:
+    brands = db.query(Material.brand).all()
+    return [brand[0] for brand in brands]
 
-        hardness = get_hardness_by_brand(brand, db)
-        if hardness:
-            print(f"Hardness: {hardness.hardness_value}")
 
-        chemical_composition = get_chemical_composition_by_brand(brand, db)
-        if chemical_composition:
-            print(f"Chemical Composition - C: {chemical_composition.C}, Si: {chemical_composition.Si}")
-
-        technological_properties = get_technological_properties_by_brand(brand, db)
-        if technological_properties:
-            print(f"Weldability: {technological_properties.weldability}")
-
-        mechanical_properties = get_mechanical_properties_by_brand(brand, db)
-        if mechanical_properties:
-            print(f"Tensile Strength: {mechanical_properties.tensile_strength}")
-
-        characteristics = get_characteristics_by_brand(brand, db)
-        if characteristics:
-            print(f"Application: {characteristics.application}")
-
-    except Exception as e:
-        print(f"Ошибка при выполнении запроса данных: {e}")
-    finally:
-        db.close()
+# Функция для получения всех брендов по index_of_material_class
+def get_brands_by_material_class_index(index_of_material_class: int, db: Session = SessionLocal()) -> List[str]:
+    material_ids = db.query(MaterialIndices.material_id).filter(
+        MaterialIndices.index_of_material_class == index_of_material_class).all()
+    material_ids = [material_id[0] for material_id in material_ids]
+    brands = db.query(Material.brand).filter(Material.id.in_(material_ids)).all()
+    return [brand[0] for brand in brands]

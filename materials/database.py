@@ -40,16 +40,19 @@
 
 Эта команда создаст все таблицы, определенные в моделях, если они еще не существуют в базе данных.
 """
-
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import os
+
 from materials.models import Base
+
+# Чтение значения для echo из переменной окружения
+ECHO = os.getenv("SQLALCHEMY_ECHO", "False").lower() in ["true", "1"]
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///materials.db")
 
 # Создание подключения к базе данных
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL, echo=ECHO)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Создание всех таблиц на основе моделей

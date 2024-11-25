@@ -5,35 +5,23 @@
 Основной модуль для запуска приложения материалов.
 Этот файл содержит основную логику для работы с базой данных, используя модели и функции CRUD.
 """
+import os
 
-from sqlalchemy.orm import Session
-from materials.database import SessionLocal, engine
-from materials.models.base import Base
-from materials.models import Material
-from materials.crud import (
-    get_material_by_brand,
-    get_hardness_by_brand,
-    get_chemical_composition_by_brand,
-    get_technological_properties_by_brand,
-    get_mechanical_properties_by_brand,
-    get_characteristics_by_brand,
-    query_data_example
-)
+from materials import get_all_brands, get_brands_by_material_class_index
+
+# Настройка логирования
+os.environ["SQLALCHEMY_ECHO"] = "False"
 
 
 def main():
-    # Создание сессии
-    db: Session = SessionLocal()
-    try:
-        # Пример вызова функции для получения данных по бренду
-        brand = "20"
-        query_data_example(brand, db)
+    # Получение всех брендов
+    all_brands = get_all_brands()
+    print("Все бренды:", all_brands)
 
-    except Exception as e:
-        db.rollback()
-        print(f"Произошла ошибка: {e}")
-    finally:
-        db.close()
+    # Получение брендов по index_of_material_class
+    index = 4
+    brands_by_index = get_brands_by_material_class_index(index)
+    print(f"Бренды с index_of_material_class = {index}:", brands_by_index)
 
 
 if __name__ == "__main__":
