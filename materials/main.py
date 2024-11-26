@@ -7,7 +7,7 @@
 """
 import os
 
-from materials import get_all_brands, get_brands_by_material_class_index
+from materials import get_all_brands, get_brands_by_material_class_index, get_chemical_composition_by_brand
 
 # Настройка логирования
 os.environ["SQLALCHEMY_ECHO"] = "False"
@@ -22,6 +22,13 @@ def main():
     index = 4
     brands_by_index = get_brands_by_material_class_index(index)
     print(f"Бренды с index_of_material_class = {index}:", brands_by_index)
+
+    brand = "30ХМА"
+    chemical_composition = get_chemical_composition_by_brand(brand=brand)
+    print(f"Хим.состав материала {brand}:", chemical_composition)
+    standard = chemical_composition.standard.standard
+    if standard:
+        print(f"по стандарту:", standard)
 
 
 if __name__ == "__main__":

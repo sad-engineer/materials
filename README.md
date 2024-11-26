@@ -19,44 +19,53 @@ pip install git+https://github.com/sad-engineer/materials.git
 Ниже приведен пример использования пакета materials для получения информации о материалах.
 
 ```sh
-from materials import get_all_brands, get_brands_by_material_class_index
+from materials import get_all_brands, get_brands_by_material_class_index, get_chemical_composition_by_brandget_chemical_composition_by_brand
 
-# Получение всех брендов материалов
+# Получение всех наименований материалов
 all_brands = get_all_brands()
 print("Все бренды:", all_brands)
 
-# Получение брендов по индексу класса материала
+# Получение наименований по индексу класса материала
 index = 4
 brands_by_index = get_brands_by_material_class_index(index)
 print(f"Бренды с index_of_material_class = {index}:", brands_by_index)
-```
 
-## Запуск основного приложения
-
-Файл main.py можно использовать для выполнения основных операций с базой данных.
-
-```sh
-python main.py
+brand = "30ХМА"
+# Получение хим состава по наименованию материала
+chemical_composition = get_chemical_composition_by_brand(brand=brand)
+print(f"Хим.состав материала {brand}:", chemical_composition)
+standard = chemical_composition.standard.standard
+if standard:
+    print(f"по стандарту:", standard)
 ```
 
 ## Пример содержимого main.py
 
 ```sh
 import os
-from materials import get_all_brands, get_brands_by_material_class_index
+from materials import get_all_brands, get_brands_by_material_class_index, get_chemical_composition_by_brand
 
 # Отключение echo при запуске main.py
 os.environ["SQLALCHEMY_ECHO"] = "False"
 
 def main():
-    # Получение всех брендов
+    # Получение всех наименований материалов
     all_brands = get_all_brands()
     print("Все бренды:", all_brands)
-
-    # Получение брендов по index_of_material_class
+    
+    # Получение наименований по индексу класса материала
     index = 4
     brands_by_index = get_brands_by_material_class_index(index)
     print(f"Бренды с index_of_material_class = {index}:", brands_by_index)
+    
+    brand = "30ХМА"
+    # Получение хим состава по наименованию материала
+    chemical_composition = get_chemical_composition_by_brand(brand=brand)
+    print(f"Хим.состав материала {brand}:", chemical_composition)
+    standard = chemical_composition.standard.standard
+    if standard:
+        print(f"по стандарту:", standard)
+
 
 if __name__ == "__main__":
     main()
@@ -83,5 +92,5 @@ print("Все бренды:", all_brands)
 * DATABASE_URL: URL для подключения к базе данных. По умолчанию используется SQLite (sqlite:///materials.db).
 * SQLALCHEMY_ECHO: Устанавливает уровень вывода для SQLAlchemy (True или False). Используйте для включения/отключения вывода SQL-запросов.
 
-Лицензия
+## Лицензия
 * Подробности смотрите в файле LICENSE.
