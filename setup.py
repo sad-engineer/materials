@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        'materials': ['data/materials.db'],
+        'materials': ['data/materials1.db'],
     },
     install_requires=[],
 )

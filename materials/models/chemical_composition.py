@@ -47,6 +47,8 @@ class ChemicalComposition(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     material_id = Column(Integer, ForeignKey('materials.id'), nullable=False)
+    standard_id = Column(Integer, ForeignKey('standards.id'), nullable=True)
+
     Ag = Column(String)
     Al = Column(String)
     Al_and_Mg = Column(String)
@@ -101,8 +103,9 @@ class ChemicalComposition(Base):
     Rare_Earth_elements = Column(String)
 
     material = relationship("Material", back_populates="chemical_composition")
+    standard = relationship("Standard", back_populates="chemical_compositions")
 
     def __repr__(self):
         attrs = {key: value for key, value in self.__dict__.items() if
-                 value is not None and key != '_sa_instance_state'}
+                 value is not None and key != '_sa_instance_state' and key != 'material_id' and key != 'standard_id'}
         return f"<ChemicalComposition({', '.join([f'{key}={value}' for key, value in attrs.items()])})>"
