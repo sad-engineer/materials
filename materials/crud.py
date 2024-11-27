@@ -112,7 +112,4 @@ def get_brands_by_material_class_index(index_of_material_class: int, db: Session
 # Функция для получения стандарта по бренду
 def get_standard_of_chemical_composition_by_brand(brand: str, db: Session = SessionLocal()):
     standard = db.query(Standard).filter(Standard.material_name == brand).first()
-    if not standard:
-        print(f"Стандарт для бренда '{brand}' не найден.")
-        return None
-    return standard
+    return standard.standard if standard else None

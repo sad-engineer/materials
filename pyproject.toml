@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "materials"
-version = "0.2.7"
+version = "0.2.8"
 description = ""
 authors = ["Andrey Nikolaevich Korenyuk <korenyuk.a.n@mail.ru>"]
 license = "LICENSE.txt"
@@ -15,10 +15,6 @@ include = [
 [tool.poetry.dependencies]
 python = "^3.9"
 sqlalchemy = "^2.0.36"
-bs4 = "^0.0.2"
-pandas = "^2.2.3"
-tqdm = "^4.67.1"
-openpyxl = "^3.1.5"
 
 [build-system]
 requires = ["poetry-core"]

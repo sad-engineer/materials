@@ -7,7 +7,8 @@
 """
 import os
 
-from materials import get_all_brands, get_brands_by_material_class_index, get_chemical_composition_by_brand
+from materials import get_all_brands, get_brands_by_material_class_index, get_chemical_composition_by_brand, \
+    get_standard_of_chemical_composition_by_brand
 
 # Настройка логирования
 os.environ["SQLALCHEMY_ECHO"] = "False"
@@ -26,7 +27,7 @@ def main():
     brand = "30ХМА"
     chemical_composition = get_chemical_composition_by_brand(brand=brand)
     print(f"Хим.состав материала {brand}:", chemical_composition)
-    standard = chemical_composition.standard.standard
+    standard = get_standard_of_chemical_composition_by_brand(brand)
     if standard:
         print(f"по стандарту:", standard)
 
