@@ -48,6 +48,7 @@ from .crud import (
     get_characteristics_by_brand,
     get_all_brands,
     get_brands_by_material_class_index,
+    get_standard_of_chemical_composition_by_brand,
 )
 
 # Настройка логирования пакета
@@ -64,4 +65,5 @@ __all__ = [
     "get_characteristics_by_brand",
     "get_all_brands",
     "get_brands_by_material_class_index",
+    "get_standard_of_chemical_composition_by_brand",
 ]

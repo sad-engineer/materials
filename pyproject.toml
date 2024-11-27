@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "materials"
-version = "0.2.06"
+version = "0.2.7"
 description = ""
 authors = ["Andrey Nikolaevich Korenyuk <korenyuk.a.n@mail.ru>"]
 license = "LICENSE.txt"

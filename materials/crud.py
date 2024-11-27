@@ -24,7 +24,7 @@
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from materials.models import Material, MaterialIndices, Hardness, ChemicalComposition, TechnologicalProperties, \
-    MechanicalProperties, CharacteristicsOfMaterial
+    MechanicalProperties, CharacteristicsOfMaterial, Standard
 from materials.database import SessionLocal
 
 
@@ -107,3 +107,12 @@ def get_brands_by_material_class_index(index_of_material_class: int, db: Session
     material_ids = [material_id[0] for material_id in material_ids]
     brands = db.query(Material.brand).filter(Material.id.in_(material_ids)).all()
     return [brand[0] for brand in brands]
+
+
+# Функция для получения стандарта по бренду
+def get_standard_of_chemical_composition_by_brand(brand: str, db: Session = SessionLocal()):
+    standard = db.query(Standard).filter(Standard.material_name == brand).first()
+    if not standard:
+        print(f"Стандарт для бренда '{brand}' не найден.")
+        return None
+    return standard
