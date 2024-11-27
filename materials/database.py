@@ -49,7 +49,10 @@ from materials.models import Base
 # Чтение значения для echo из переменной окружения
 ECHO = os.getenv("SQLALCHEMY_ECHO", "False").lower() in ["true", "1"]
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///materials.db")
+# Определяем путь к базе данных относительно расположения этого файла
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATABASE_PATH = os.path.join(BASE_DIR, "materials.db")
+DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
 
 # Создание подключения к базе данных
 engine = create_engine(DATABASE_URL, echo=ECHO)

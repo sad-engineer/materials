@@ -12,6 +12,6 @@ env.bak /
 .coverage 
 .idea
 .idea/
-dist/
+#dist/
 temp/
 materials/logs
