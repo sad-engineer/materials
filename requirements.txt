@@ -1,1 +1,5 @@
 # List your package dependencies here
+SQLAlchemy>=2.0.0
+alembic>=1.12.0
+pandas>=2.0.0
+numpy>=1.24.0

@@ -7,11 +7,16 @@
 """
 import os
 
-from materials import get_all_brands, get_brands_by_material_class_index, get_chemical_composition_by_brand, \
-    get_standard_of_chemical_composition_by_brand
-
 # Настройка логирования
 os.environ["SQLALCHEMY_ECHO"] = "False"
+
+
+from materials import (
+    get_all_brands, 
+    get_brands_by_material_class_index, 
+    get_chemical_composition_by_brand, 
+    get_standard_of_chemical_composition_by_brand
+)
 
 
 def main():
@@ -33,4 +38,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main()  

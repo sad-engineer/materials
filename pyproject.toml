@@ -1,13 +1,12 @@
 [tool.poetry]
 name = "materials"
-version = "0.2.8"
+version = "0.2.09"
 description = ""
 authors = ["Andrey Nikolaevich Korenyuk <korenyuk.a.n@mail.ru>"]
 license = "LICENSE.txt"
 readme = "README.md"
 packages = [{include = "materials"}]
 
-# Обязательно добавьте этот блок
 include = [
     "materials/materials.db"
 ]
